@@ -1,0 +1,31 @@
+# depslib dependency file v1.0
+1624574283 source:d:\programmingbros\c_c++bros\trabalhofinalestrutura\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+	<stdbool.h>
+	<ctype.h>
+	"sistema.h"
+	"livros.h"
+
+1624573578 source:d:\programmingbros\c_c++bros\trabalhofinalestrutura\sistema.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+	<stdbool.h>
+	<ctype.h>
+
+1624574343 source:d:\programmingbros\c_c++bros\trabalhofinalestrutura\livros.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<locale.h>
+	<stdbool.h>
+	<ctype.h>
+
+1624573577 d:\programmingbros\c_c++bros\trabalhofinalestrutura\sistema.h
+
+1624573854 d:\programmingbros\c_c++bros\trabalhofinalestrutura\livros.h
+
