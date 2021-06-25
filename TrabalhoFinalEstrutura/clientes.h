@@ -2,6 +2,6 @@
 #define CLIENTES_H_INCLUDED
 
 void cadastrarCliente(void);
-void emprestarLivro(char ISBN[18]);
+int pesquisarID(char IDPesquisado[18]);
 
 #endif // CLIENTES_H_INCLUDED

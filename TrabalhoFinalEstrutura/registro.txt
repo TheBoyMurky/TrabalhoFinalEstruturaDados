@@ -1,6 +1,13 @@
 ====
+Titulo: boa noite punpun 2
+Autor: inio asano
+ISBN: 978-85-22-3333-4
+
+Exemplares: 7243044
+
+====
 Titulo: boa noite punpun 1
 Autor: inio asano
-ISBN: 978-85-457-0961-9
-Exemplares: 1
+ISBN: 978-85-111-2222-3
+Exemplares: 7242868
 
