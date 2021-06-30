@@ -6,6 +6,7 @@ void retirar(char ISBN[18]);
 int pesquisarISBN(char ISBNPesquisado[18]);
 void imprimirInfo(struct NoLivro* l);
 void emprestarLivro(void);
+void listarLivros(void);
 void salvarInfo(void);
 void organizar(void);
 

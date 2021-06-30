@@ -36,8 +36,8 @@ void sistema(void) {
                             printf("Insira o ISBN a ser pesquisado: ");
                             fflush(stdin);
                             fgets(ISBN, 18, stdin);
-                            //Será retornado da função pesquisarISBN para retornar o Nó
-                            if(pesquisarISBN(ISBN)) {
+                            //Será retornado da função pesquisarISBN para retornar o Nó, se não for igual a NULL então imprime as informações
+                            if(pesquisarISBN(ISBN) != NULL) {
                                 //imprimirInfo(atual);
                                 puts("Livro encontrado");
                             } else {

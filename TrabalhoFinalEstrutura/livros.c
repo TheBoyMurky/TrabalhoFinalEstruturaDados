@@ -19,23 +19,24 @@ struct Livro {
     char isbn[18];
 };
 //Listas Linkadas
-struct NoLivro {
+typedef struct NoLivros { //typedef é usado para que sempre que declaramos uma variavel do tipo NoLivros, não precise ser sempre "struct NoLivros variavel"
     struct Livro livro;
     struct NoLivro* prox;
-};
-struct NoEncontradoLivro {
-    struct NoLivro* encontrado;
+} NoLivro;
+typedef struct NoEncontradoLivros {
+    struct Livro encontrado;
     struct NoEncontradoLivro* prox;
-};
-//Talvez criar uma lista para um registro de emprestimo, dívida, etc.
-//struct Registros;
+} NoEncontradoLivro;
+
 
 //Ponteiro que ajudarão em algoritmos de organização
-struct NoLivro* primeiroLivro = NULL;
-struct NoLivro* atualLivro = NULL;
-struct NoLivro* anteriorLivro = NULL;
-struct NoLivro* proximoLivro = NULL;
-struct NoLivro* temporarioLivro = NULL;
+NoLivro* primeiroLivro = NULL;
+NoLivro* atualLivro = NULL;
+NoLivro* anteriorLivro = NULL;
+NoLivro* proximoLivro = NULL;
+NoLivro* temporarioLivro = NULL;
+//Esse será uma array que usaremos para salvar, procurar e organizar
+NoEncontradoLivro* livrosE[];
 
 //Colocar um novo livro no início
 void cadastrar(void) {
@@ -43,7 +44,7 @@ void cadastrar(void) {
     char temp[50];
     int quant;
     //Iniciamos um ponteiro do tipo No para receber o endereço que será alocado por malloc de tamanho que cabe a nossa struct No
-    struct NoLivro* cadastro = malloc(sizeof(struct NoLivro)); //malloc é apenas uma função para reservar um espaço em memória de tamanho x e vai retornar o endereço onde reservou
+    NoLivro* cadastro = malloc(sizeof(NoLivro)); //malloc é apenas uma função para reservar um espaço em memória de tamanho x e vai retornar o endereço onde reservou
     printf("Insira o título do livro: ");
     fflush(stdin);
     fgets(temp, 50, stdin);
@@ -53,11 +54,10 @@ void cadastrar(void) {
     fgets(temp, 50, stdin);
     strcpy(cadastro->livro.autor, strlwr(temp));
     printf("Insira o ISBN do livro [Exemplo 978-85-111-2222-3]: ");
-    //implementar função pesquisar para retornar bool informando se tem outro cadastro com o mesmo isbn
     fflush(stdin);
     fgets(ISBN, 18, stdin);
     if(strlen(ISBN) == 17) {
-        if(!pesquisarISBN(ISBN)) {
+        if(pesquisarISBN(ISBN) != NULL) {
             strcpy(cadastro->livro.isbn, ISBN);
         } else {
             puts("Já existe um livro com esse identificador:");
@@ -122,7 +122,9 @@ void retirar(char ISBN[18]) {
     return;
 }
 
-//Implementar para retornar o No encontrado
+//Não consegui fazer retornar um NoLivro, irei então utilizar para resolver condição
+//retornando 0 para falso e 1 para verdadeiro
+//Caso retorne 1 significa que o atualLivro é o Livro encontrado
 int pesquisarISBN(char ISBNPesquisado[18]) {
 
     atualLivro = primeiroLivro;
@@ -142,16 +144,17 @@ int pesquisarISBN(char ISBNPesquisado[18]) {
 }
 
 //Ajeitar para que retorne a string para outras funções
-void imprimirInfo(struct NoLivro* l) {
+void imprimirInfo(NoLivro* l) {
     if(l == NULL) {
         puts("Livro Inválido!");
         return;
     }
-    printf("\n===Informações Livro===\nTitulo: %sAutor: %sISBN: %s\nExemplares: %d\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn, quantExemplares(l));
+    //Ajeitar para que consegue imprimir a quantidade em estoque
+    printf("\n===Informações Livro===\nTitulo: %sAutor: %sISBN: %s\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn);
     return;
 }
 
-int quantExemplares(struct NoLivro *l) {
+int quantExemplares(NoLivro *l) {
     int contador = 0;
     for(int i = 0; i < 10; i++) {
         if(l->livro.exemplares[i] == 1)
@@ -160,6 +163,7 @@ int quantExemplares(struct NoLivro *l) {
     return contador;
 }
 
+//Terminar de linkar o livro com o cliente
 void emprestarLivro(void) {
     char ISBN[18], ID[9];
     printf("Insira o ISBN do livro que será emprestado: ");
@@ -171,29 +175,38 @@ void emprestarLivro(void) {
     return;
 }
 
+void listarLivros(void) {
+
+}
+
 // https://pt.stackoverflow.com/questions/45642/como-guardar-ler-lista-encadeada-em-arquivo
 void salvarInfo(void) {
-    //Criar uma função para organizar a lista e inserir aqui antes de salvar para um arquivo
-    organizar();
     if(primeiroLivro == NULL) {
         printf("A lista está vazia, nada será salvo.\n");
         return;
     }
     FILE *fp;
-    fp = fopen("registro.txt", "w");
-    atualLivro = primeiroLivro;
+    fp = fopen("registro.dat", "wb"); // arquivo tem que ter permissão w para escrita e b para abrir como binario
+    NoEncontradoLivro LivrosE[50];
+    int contador = 0, ret;
+    if (fp != NULL) {
+        while(atualLivro->prox != NULL) {
+            LivrosE[contador].encontrado = atualLivro->livro;
+            atualLivro = atualLivro->prox;
+        }
+        ret = fwrite(LivrosE, sizeof(NoEncontradoLivro), contador, fp);
+        if (ret == contador)
+            printf("Gravacao de registros com sucesso!\n");
+        else
+            printf("Foram gravados apenas %d elementos\n", ret);
+        fclose(fp);
+    } else
+        puts("Erro na criação do arquivo");
 
-    while(atualLivro->prox != NULL) {
-        fprintf(fp, "====\nTitulo: %sAutor: %sISBN: %s\nExemplares: %d\n\n", atualLivro->livro.titulo, atualLivro->livro.autor, atualLivro->livro.isbn, atualLivro->livro.exemplares);
-        atualLivro = atualLivro->prox;
-    }
-    //Descobrir depois pq não ta imprimindo o ultimo da lista...
-    fprintf(fp, "====\nTitulo: %sAutor: %sISBN: %s\nExemplares: %d\n\n", atualLivro->livro.titulo, atualLivro->livro.autor, atualLivro->livro.isbn, atualLivro->livro.exemplares);
-    puts("Escrito para o disco com êxito!");
-    fclose(fp);
     return;
 }
 
+//Não ta funcionando direito!
 void organizar(void) {
     if(primeiroLivro == NULL)
         return;

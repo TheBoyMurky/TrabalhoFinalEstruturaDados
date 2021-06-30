@@ -10,7 +10,7 @@
 	"livros.h"
 	"clientes.h"
 
-1624580137 source:d:\programmingbros\c_c++bros\trabalhofinalestrutura\sistema.c
+1625057732 source:d:\programmingbros\c_c++bros\trabalhofinalestrutura\sistema.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -18,7 +18,7 @@
 	<stdbool.h>
 	<ctype.h>
 
-1624583102 source:d:\programmingbros\c_c++bros\trabalhofinalestrutura\livros.c
+1625071610 source:d:\programmingbros\c_c++bros\trabalhofinalestrutura\livros.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
@@ -29,7 +29,7 @@
 
 1624573577 d:\programmingbros\c_c++bros\trabalhofinalestrutura\sistema.h
 
-1624581598 d:\programmingbros\c_c++bros\trabalhofinalestrutura\livros.h
+1625061124 d:\programmingbros\c_c++bros\trabalhofinalestrutura\livros.h
 
 1624581423 d:\programmingbros\c_c++bros\trabalhofinalestrutura\clientes.h
 
