@@ -48,7 +48,7 @@ void cadastrarCliente(void) {
             return;
         }
     } else {
-        puts("Tamanho de ISBN incorreto, tente novamente");
+        puts("ID incorreto, tente novamente");
         return;
     }
 }
@@ -72,4 +72,16 @@ int pesquisarID(char IDPesquisado[18]) {
     }
     //Caso saia do while loop significa que o ISBN foi encontrado
     return 1;
+}
+
+//Terminar de linkar o livro com o cliente
+void emprestarLivro(void) {
+    char ISBN[18], ID[9];
+    printf("Insira o ISBN do livro que será emprestado: ");
+    fflush(stdin);
+    fgets(ISBN, 18, stdin);
+    printf("Insira o ID do cliente que será emprestado o livro: ");
+    fflush(stdin);
+    fgets(ID, 18, stdin);
+    return;
 }

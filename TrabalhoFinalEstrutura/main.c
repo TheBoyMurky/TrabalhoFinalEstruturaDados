@@ -8,7 +8,14 @@
 #include "livros.h"
 #include "clientes.h"
 
+/*
+* Disciplina: Estrutura de Dados
+* Professora: Marta Adriana Machado da Silva
+* Grupo: Artur Dias, Bruno Simon, David Leonardeli, Jannaina e Luiz Gustavo
+*/
 
+// AutoLibrarian
+// "Automatize suas funções na biblioteca com esse programa!"
 int main()
 {
     setlocale(LC_ALL, "portuguese-brazilian");

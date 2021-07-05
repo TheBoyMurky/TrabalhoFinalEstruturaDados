@@ -23,11 +23,10 @@ typedef struct NoLivros { //typedef é usado para que sempre que declaramos uma v
     struct Livro livro;
     struct NoLivro* prox;
 } NoLivro;
-typedef struct NoEncontradoLivros {
-    struct Livro encontrado;
-    struct NoEncontradoLivro* prox;
-} NoEncontradoLivro;
-
+typedef struct LivrosEncontrados {
+    struct NoLivro* livroE;
+    struct LivrosEncontrados* prox;
+} LivroEncontrado;
 
 //Ponteiro que ajudarão em algoritmos de organização
 NoLivro* primeiroLivro = NULL;
@@ -35,8 +34,6 @@ NoLivro* atualLivro = NULL;
 NoLivro* anteriorLivro = NULL;
 NoLivro* proximoLivro = NULL;
 NoLivro* temporarioLivro = NULL;
-//Esse será uma array que usaremos para salvar, procurar e organizar
-NoEncontradoLivro* livrosE[];
 
 //Colocar um novo livro no início
 void cadastrar(void) {
@@ -57,7 +54,7 @@ void cadastrar(void) {
     fflush(stdin);
     fgets(ISBN, 18, stdin);
     if(strlen(ISBN) == 17) {
-        if(pesquisarISBN(ISBN) != NULL) {
+        if(!pesquisarISBN(ISBN)) {
             strcpy(cadastro->livro.isbn, ISBN);
         } else {
             puts("Já existe um livro com esse identificador:");
@@ -163,20 +160,18 @@ int quantExemplares(NoLivro *l) {
     return contador;
 }
 
-//Terminar de linkar o livro com o cliente
-void emprestarLivro(void) {
-    char ISBN[18], ID[9];
-    printf("Insira o ISBN do livro que será emprestado: ");
-    fflush(stdin);
-    fgets(ISBN, 18, stdin);
-    printf("Insira o ID do cliente que será emprestado o livro: ");
-    fflush(stdin);
-    fgets(ID, 18, stdin);
-    return;
-}
-
 void listarLivros(void) {
-
+    atualLivro = primeiroLivro;
+    if(atualLivro == NULL) {
+        printf("A lista está vazia\n");
+        return;
+    }
+    organizarTitulo();
+    while(atualLivro != NULL) {
+        imprimirInfo(atualLivro);
+        atualLivro = atualLivro->prox;
+    }
+    return;
 }
 
 // https://pt.stackoverflow.com/questions/45642/como-guardar-ler-lista-encadeada-em-arquivo
@@ -187,14 +182,14 @@ void salvarInfo(void) {
     }
     FILE *fp;
     fp = fopen("registro.dat", "wb"); // arquivo tem que ter permissão w para escrita e b para abrir como binario
-    NoEncontradoLivro LivrosE[50];
+    struct Livro LivrosE[50];
     int contador = 0, ret;
     if (fp != NULL) {
         while(atualLivro->prox != NULL) {
-            LivrosE[contador].encontrado = atualLivro->livro;
+            LivrosE[contador] = atualLivro->livro;
             atualLivro = atualLivro->prox;
         }
-        ret = fwrite(LivrosE, sizeof(NoEncontradoLivro), contador, fp);
+        ret = fwrite(LivrosE, sizeof(LivrosE), contador, fp);
         if (ret == contador)
             printf("Gravacao de registros com sucesso!\n");
         else
@@ -206,8 +201,7 @@ void salvarInfo(void) {
     return;
 }
 
-//Não ta funcionando direito!
-void organizar(void) {
+void organizarTitulo(void) {
     if(primeiroLivro == NULL)
         return;
 
@@ -223,9 +217,9 @@ void organizar(void) {
         proximoLivro = atualLivro->prox;
         //Organizar por título, implementar uma organização por escolha do usuário
         for ( j = 1 ; j < k ; j++ ) {
-            x = strncmp(atualLivro->livro.titulo, proximoLivro->livro.titulo, 50);
-            if (x < 0) {
-                temporarioLivro = atualLivro->prox;
+            x = strcmp(atualLivro->livro.titulo, proximoLivro->livro.titulo);
+            if (x > 0) {
+                temporarioLivro = atualLivro;
                 atualLivro->prox = proximoLivro->prox;
                 proximoLivro->prox = temporarioLivro;
             }

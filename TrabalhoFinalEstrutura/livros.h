@@ -8,6 +8,6 @@ void imprimirInfo(struct NoLivro* l);
 void emprestarLivro(void);
 void listarLivros(void);
 void salvarInfo(void);
-void organizar(void);
+void organizarTitulo(void);
 
 #endif // LIVROS_H_INCLUDED
