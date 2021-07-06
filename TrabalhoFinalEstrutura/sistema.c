@@ -4,6 +4,7 @@
 #include <locale.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include "livros.h"
 
 void sistema(void) {
 
@@ -21,7 +22,7 @@ void sistema(void) {
         switch(op) {
             case 1:
                 while(op != 5) {
-                    printf("===Estoque===\n1 - Cadastrar novo livro\n2 - Retirar Livro\n3 - Procurar Livro\n4 - Listar Livros\n5 - Voltar\n> "); scanf("%d", &op);
+                    printf("===Estoque===\n1 - Cadastrar novo livro\n2 - Retirar Livro\n3 - Alterar Cadastro Livro\n4 - Listar Livros\n5 - Voltar\n> "); scanf("%d", &op);
                     switch(op) {
                         case 1:
                             cadastrar();
@@ -33,20 +34,12 @@ void sistema(void) {
                             retirar(ISBN);
                             break;
                         case 3:
-                            printf("Insira o ISBN a ser pesquisado: ");
-                            fflush(stdin);
-                            fgets(ISBN, 18, stdin);
-                            //Será retornado da função pesquisarISBN para retornar o Nó, se não for igual a NULL então imprime as informações
-                            if(pesquisarISBN(ISBN) != NULL) {
-                                //imprimirInfo(atual);
-                                puts("Livro encontrado");
-                            } else {
-                                puts("Livro não encontrado");
-                            }
+                            modificarLivro();
                             break;
                         case 4:
                             //Implementar a função de organização para que possa procurar por Autor, título e ISBN
-                            puts("Para implementar");
+                            listarLivros();
+                            break;
                         case 5:
                             break;
                         default:
