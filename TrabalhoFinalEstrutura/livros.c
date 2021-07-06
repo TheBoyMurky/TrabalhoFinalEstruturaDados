@@ -69,11 +69,11 @@ void cadastrar(void) {
     printf("Insira quantidade de exemplares tem em estoque desse livro: ");
     fflush(stdin);
     scanf("%d", &quant);
-    if((quant > 0) && !(quant > 10)) {
+    if((quant > 0) && (quant < 10)) {
         for(int i = 0; i < quant; i++)
             cadastro->livro.exemplares[i] = 1;
     } else {
-        puts("Quantidade inválido, números abaixo de 0, 0 ou números acima de 10 não são permitidos");
+        puts("Quantidade inválido, números abaixo de 0, 0 e números acima de 10 não são permitidos");
         return;
     }
 
@@ -118,10 +118,50 @@ void retirar(char ISBN[18]) {
     imprimirInfo(atualLivro);
     return;
 }
+void modificarLivro(void) {
+    char ISBN[18];
+    char temp[50];
+    int quant, op;
+    printf("Insira o ISBN a ser alterado: ");
+    fflush(stdin);
+    fgets(ISBN, 18, stdin);
+    if(pesquisarISBN(ISBN)) {
+        printf("\nLivro encontrado:");
+        imprimirInfo(atualLivro);
+
+        printf("Deseja modificar algum elemento?\n1 - Título\n2 - Autor\n3 - Sair\n");
+        scanf("%d", &op);
+        switch(op) {
+            case 1:
+                printf("Insira um novo título: ");
+                fflush(stdin);
+                fgets(temp, 50, stdin);
+                strcpy(atualLivro->livro.titulo, temp);
+                break;
+            case 2:
+                printf("Insira um novo título: ");
+                fflush(stdin);
+                fgets(temp, 50, stdin);
+                strcpy(atualLivro->livro.autor, temp);
+                break;
+            case 3:
+                break;
+            default:
+                puts("Valor inserido inválido, tente novamente");
+        }
+        printf("Resultado: ");
+        imprimirInfo(atualLivro);
+    } else {
+        puts("\nLivro não encontrado\n");
+    }
+
+    return;
+}
 
 //Não consegui fazer retornar um NoLivro, irei então utilizar para resolver condição
 //retornando 0 para falso e 1 para verdadeiro
 //Caso retorne 1 significa que o atualLivro é o Livro encontrado
+//A função via utilizar o atualLivro como ponteiro para resolver passar o valor encontrado
 int pesquisarISBN(char ISBNPesquisado[18]) {
 
     atualLivro = primeiroLivro;
@@ -151,15 +191,6 @@ void imprimirInfo(NoLivro* l) {
     return;
 }
 
-int quantExemplares(NoLivro *l) {
-    int contador = 0;
-    for(int i = 0; i < 10; i++) {
-        if(l->livro.exemplares[i] == 1)
-            contador++;
-    }
-    return contador;
-}
-
 void listarLivros(void) {
     atualLivro = primeiroLivro;
     if(atualLivro == NULL) {
@@ -167,7 +198,7 @@ void listarLivros(void) {
         return;
     }
     organizarTitulo();
-    while(atualLivro != NULL) {
+    while(atualLivro != NULL) { // Isso não está imprimindo o último da lista
         imprimirInfo(atualLivro);
         atualLivro = atualLivro->prox;
     }
@@ -180,25 +211,43 @@ void salvarInfo(void) {
         printf("A lista está vazia, nada será salvo.\n");
         return;
     }
-    FILE *fp;
+    FILE *fp; // File pointer
     fp = fopen("registro.dat", "wb"); // arquivo tem que ter permissão w para escrita e b para abrir como binario
-    struct Livro LivrosE[50];
-    int contador = 0, ret;
+    struct Livro LivrosE[50]; // Livros encontrados
+    int contador = 0, esc;
     if (fp != NULL) {
         while(atualLivro->prox != NULL) {
             LivrosE[contador] = atualLivro->livro;
             atualLivro = atualLivro->prox;
         }
-        ret = fwrite(LivrosE, sizeof(LivrosE), contador, fp);
-        if (ret == contador)
+        esc = fwrite(LivrosE, sizeof(LivrosE), contador, fp); // Função retorna quantidade de elementos escritos
+        if (esc == contador)
             printf("Gravacao de registros com sucesso!\n");
         else
-            printf("Foram gravados apenas %d elementos\n", ret);
+            printf("Foram gravados apenas %d elementos\n", esc);
         fclose(fp);
     } else
         puts("Erro na criação do arquivo");
 
     return;
+}
+void recuperarInfo(void) {
+    FILE *fp;
+    fp = fopen("registro.dat", "rb");
+    struct Livro LivrosE[50];
+    int contador = 0, esc;
+
+    if (fp != NULL) {
+        esc = fread(LivrosE, sizeof(LivrosE), contador, fp);
+        if (esc == contador) {
+            printf("Leitura do registro realizado com sucesso\n");
+        }
+        else
+            printf("Foram lidos apenas %d elementos\n", esc);
+        fclose(fp);
+    }
+    else
+        puts("Erro: abertura do arquivo");
 }
 
 void organizarTitulo(void) {
