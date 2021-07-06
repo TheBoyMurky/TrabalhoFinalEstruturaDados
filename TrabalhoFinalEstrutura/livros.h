@@ -3,7 +3,7 @@
 
 //Modifica Lista
 void cadastrar(void);
-void retirar(char ISBN[18]);
+void retirar(void);
 void modificarLivro(void);
 void organizarTitulo(void);
 

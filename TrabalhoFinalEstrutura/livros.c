@@ -18,6 +18,10 @@ struct Livro {
     //Valor Chave para identificação
     char isbn[18];
 };
+
+//Limite de títulos que pode utilizar para a biblioteca, para essa demonstração iremos mostrar com até 10 títulos
+#define LIMITEBIBLIOTECA 10
+
 //Listas Linkadas
 typedef struct NoLivros { //typedef é usado para que sempre que declaramos uma variavel do tipo NoLivros, não precise ser sempre "struct NoLivros variavel"
     struct Livro livro;
@@ -77,8 +81,6 @@ void cadastrar(void) {
         return;
     }
 
-
-
     //Colocar esse livro como o primeiro da lista colocando o prox apontando para o primeiro de antes
     cadastro->prox = primeiroLivro;
     //Depois coloca no variável global qual é o novo primeiro da lista
@@ -88,34 +90,40 @@ void cadastrar(void) {
     return;
 }
 
-void retirar(char ISBN[18]) {
-
+void retirar(void) {
     if(primeiroLivro == NULL) {
         return;
     }
     atualLivro = primeiroLivro;
-    //Quick Search
-    while(strcmp(atualLivro->livro.isbn, ISBN) != 0) {
-        //Caso o atual for o ultimo, encerra o programa e retorna falso
-        if(atualLivro->prox == NULL) {
-            return;
-        } else {
-            //Guarde o ponteiro atual em anterior
-            anteriorLivro = atualLivro;
-            //Caso o atual não for o ultimo, continue a procurar
-            atualLivro = atualLivro->prox;
+    char ISBN[18];
+    printf("Insira o ISBN a ser retirado: ");
+    fflush(stdin);
+    fgets(ISBN, 18, stdin);
+    if(pesquisarISBN(ISBN)) {
+        while(strcmp(atualLivro->livro.isbn, ISBN) != 0) {
+            //Caso o atual for o ultimo, encerra o programa e retorna falso
+            if(atualLivro->prox == NULL) {
+                return;
+            } else {
+                //Guarde o ponteiro atual em anterior
+                anteriorLivro = atualLivro;
+                //Caso o atual não for o ultimo, continue a procurar
+                atualLivro = atualLivro->prox;
+            }
         }
-    }
 
-    if(atualLivro == primeiroLivro) {
-        //só esquece o primeiro de antes em memória
-        primeiroLivro = primeiroLivro->prox;
-    } else {
-        //Nesse passo será colocado o próximo do atual, para o próximo do anterior, assim, o anterior vai passar em frente ignorando o atual
-        anteriorLivro->prox = atualLivro->prox;
-    }
-    printf("Livro retirado com sucesso:\n");
-    imprimirInfo(atualLivro);
+        if(atualLivro == primeiroLivro) {
+            //só esquece o primeiro de antes em memória
+            primeiroLivro = primeiroLivro->prox;
+        } else {
+            //Nesse passo será colocado o próximo do atual, para o próximo do anterior, assim, o anterior vai passar em frente ignorando o atual
+            anteriorLivro->prox = atualLivro->prox;
+        }
+        printf("Livro retirado com sucesso:\n");
+        imprimirInfo(atualLivro);
+    } else
+        puts("Não foi encontrado um livro com esse ISBN, tente novamente");
+
     return;
 }
 void modificarLivro(void) {
@@ -197,8 +205,8 @@ void listarLivros(void) {
         printf("A lista está vazia\n");
         return;
     }
-    organizarTitulo();
-    while(atualLivro != NULL) { // Isso não está imprimindo o último da lista
+    //organizarTitulo(); // Ver erro em organizarTítulo
+    while(atualLivro != NULL) {
         imprimirInfo(atualLivro);
         atualLivro = atualLivro->prox;
     }
@@ -213,18 +221,19 @@ void salvarInfo(void) {
     }
     FILE *fp; // File pointer
     fp = fopen("registro.dat", "wb"); // arquivo tem que ter permissão w para escrita e b para abrir como binario
-    struct Livro LivrosE[50]; // Livros encontrados
+    struct Livro LivrosE[LIMITEBIBLIOTECA]; // Livros encontrados
     int contador = 0, esc;
     if (fp != NULL) {
         while(atualLivro->prox != NULL) {
             LivrosE[contador] = atualLivro->livro;
             atualLivro = atualLivro->prox;
+            contador++;
         }
-        esc = fwrite(LivrosE, sizeof(LivrosE), contador, fp); // Função retorna quantidade de elementos escritos
+        esc = fwrite(LivrosE, sizeof(LivrosE), LIMITEBIBLIOTECA, fp); // Função retorna quantidade de elementos escritos
         if (esc == contador)
             printf("Gravacao de registros com sucesso!\n");
         else
-            printf("Foram gravados apenas %d elementos\n", esc);
+            printf("Erro na gravação de registro!\n");
         fclose(fp);
     } else
         puts("Erro na criação do arquivo");
@@ -234,22 +243,38 @@ void salvarInfo(void) {
 void recuperarInfo(void) {
     FILE *fp;
     fp = fopen("registro.dat", "rb");
-    struct Livro LivrosE[50];
-    int contador = 0, esc;
+    struct Livro LivrosE[LIMITEBIBLIOTECA];
+    int esc;
 
     if (fp != NULL) {
-        esc = fread(LivrosE, sizeof(LivrosE), contador, fp);
-        if (esc == contador) {
+        esc = fread(LivrosE, sizeof(LivrosE), LIMITEBIBLIOTECA, fp);
+        if (esc > 0) {
+            for (int i = 0; i < esc; i++) {
+                NoLivro* reCadastro = malloc(sizeof(NoLivro));
+                strcpy(reCadastro->livro.titulo, LivrosE[i].titulo);
+                strcpy(reCadastro->livro.autor, LivrosE[i].autor);
+                if(primeiroLivro == NULL)
+                    primeiroLivro = reCadastro;
+                if(anteriorLivro == NULL) {
+                    anteriorLivro = reCadastro;
+                    continue;
+                } else {
+                    anteriorLivro->prox = reCadastro;
+                    anteriorLivro = reCadastro;
+                }
+            }
             printf("Leitura do registro realizado com sucesso\n");
         }
         else
-            printf("Foram lidos apenas %d elementos\n", esc);
+            printf("Não há registros anteriores para recuperar\n");
+
         fclose(fp);
     }
     else
-        puts("Erro: abertura do arquivo");
+        puts("\nNão há arquivo de registros anteriores\n");
 }
 
+// Redefinir o primeiroLivro no final pois está excluindo na hora de listar
 void organizarTitulo(void) {
     if(primeiroLivro == NULL)
         return;

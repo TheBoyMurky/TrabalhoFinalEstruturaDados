@@ -8,9 +8,9 @@
 
 void sistema(void) {
 
-    static int op = 9;
+    int op = 1;
+    int recuperadoInfo = 0; //Quando for igual a 1 foi tentado recuperar os registros de registro.dat
     char ISBN[18];
-
     while(op != 0) {
         printf("\n ===Sistema Biblioteca===\n");
         printf("1 - Estoque Livro\n");
@@ -21,6 +21,10 @@ void sistema(void) {
 
         switch(op) {
             case 1:
+                if(recuperadoInfo == 0) {
+                    recuperarInfo();
+                    recuperadoInfo++;
+                }
                 while(op != 5) {
                     printf("===Estoque===\n1 - Cadastrar novo livro\n2 - Retirar Livro\n3 - Alterar Cadastro Livro\n4 - Listar Livros\n5 - Voltar\n> "); scanf("%d", &op);
                     switch(op) {
@@ -28,10 +32,7 @@ void sistema(void) {
                             cadastrar();
                             break;
                         case 2:
-                            printf("Insira o ISBN do livro a ser retirado: ");
-                            fflush(stdin);
-                            fgets(ISBN, 18, stdin);
-                            retirar(ISBN);
+                            retirar();
                             break;
                         case 3:
                             modificarLivro();
