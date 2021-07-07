@@ -37,12 +37,12 @@ lista principal permitindo o acesso à informação completa. O algoritmo de ordena
 7.O  sistema  deve  ainda  permitir,  para  uma  entidade  específica,  a  localização  de determinado registro pelo campo utilizado no item 6.
 O algoritmo de busca binária deve ser utilizado.
 
-8.Ao ser executado posteriormente, o sistema, deve recompor em memória todas as informações previamente armazenadas em disco. !Acho que consegui!
+8.Ao ser executado posteriormente, o sistema, deve recompor em memória todas as informações previamente armazenadas em disco.
 
 9.Considerando o objetivo principal do sistema (controle de empréstimos de livros) o mesmo deve realizar todas as consistências ou operações
 que se caracterizem como uma  regra  de  negócio  (por  exemplo,  verificação  do  limite  de  empréstimo  por usuário, cobrança de multa,
-travamento de empréstimo, etc). As regras são descritas na seção II. Universidade do Extremo Sul Catarinense !Realizado ja uma verificação de limite!
-Unidade Acadêmica de Ciências, Engenharias e Tecnologias Curso de Ciência da Computação
+travamento de empréstimo, etc). As regras são descritas na seção II. Universidade do Extremo Sul Catarinense
+Unidade Acadêmica de Ciências, Engenharias e Tecnologias Curso de Ciência da Computação !Realizado uma verificação de limite!
 
 10.O sistema deve permitir a geração de pelo menos dois relatórios gerenciais em que as  informações  estejam  agrupadas  e  sumarizadas.
 Por  exemplo,  os  10  livros  mais emprestados durante um determinado período.

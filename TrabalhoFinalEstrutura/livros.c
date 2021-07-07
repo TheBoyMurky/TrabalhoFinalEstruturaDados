@@ -45,6 +45,7 @@ NoLivro* temporarioLivro1 = NULL;
 NoLivro* temporarioLivro2 = NULL;
 //Ponteiros da lista organizada
 LivroEncontrado* primeiroLivroE = NULL;
+LivroEncontrado* ultimoLivroE = NULL;
 LivroEncontrado* atualLivroE = NULL;
 LivroEncontrado* proximoLivroE = NULL;
 
@@ -100,6 +101,8 @@ void cadastrar(void) {
     cadastroE->prox = primeiroLivroE;
     //Depois coloca no variável global qual é o novo primeiro da lista
     primeiroLivro = cadastro;
+    if(primeiroLivroE == NULL)
+        ultimoLivroE = cadastroE;
     primeiroLivroE = cadastroE;
 
     printf("\nLivro cadastrado com sucesso!\n\n");
@@ -107,6 +110,7 @@ void cadastrar(void) {
     return;
 }
 
+//Ajeitar para que altere a lista secundária
 void retirar(void) {
     if(primeiroLivro == NULL) {
         return;
@@ -253,6 +257,60 @@ int pesquisarISBN(char ISBNPesquisado[18]) {
     //Caso saia do while loop significa que o ISBN foi encontrado
     return 1;
 }
+/* Implementação Com Bubble Sort
+int pesquisarISBN(char ISBNPesquisado[18]) {
+
+    if(primeiroLivroE == NULL)
+        return 0;
+
+    int tamanhoLista = 0;
+    int i, j, k, x, op;
+
+    for(atualLivroE = primeiroLivroE; atualLivroE != NULL; atualLivroE = atualLivroE->prox) {
+        tamanhoLista++;
+    }
+
+    k = tamanhoLista;
+
+    atualLivroE = primeiroLivroE;
+
+    //Organizar os ISBN
+    for (i = 0 ; i < tamanhoLista - 1 ; i++, k-- ) {
+        atualLivroE = primeiroLivroE;
+        proximoLivroE = atualLivroE->prox;
+        for ( j = 1 ; j < k ; j++ ) {
+            temporarioLivro1 = atualLivroE->livroE;
+            temporarioLivro2 = proximoLivroE->livroE;
+            int valorComparacao = strncmp(temporarioLivro1->livro.titulo, temporarioLivro2->livro.titulo, 50);
+            if ( valorComparacao > 0 ) {
+                atualLivroE->livroE = temporarioLivro2;
+                proximoLivroE->livroE = temporarioLivro1;
+            }
+            atualLivroE = atualLivroE->prox;
+            proximoLivroE = proximoLivroE->prox;
+        }
+    }
+
+    //Bubble Sort
+    middle = (first+last)/2;
+    while (first <= last) {
+        if (array[middle] < search) {
+            first = middle + 1;
+        } else if (array[middle] == search) {
+            printf("%d is present at index %d.\n", search, middle+1);
+            break;
+        } else {
+            last = middle - 1;
+        }
+        middle = (first + last)/2;
+    }
+    if (first > last)
+        printf("Not found! %d is not present in the list.\n", search);
+
+    //Caso saia do while loop significa que o ISBN foi encontrado
+    return 1;
+}
+*/
 
 //Ajeitar para que retorne a string para outras funções
 void imprimirInfo(NoLivro* l) {
