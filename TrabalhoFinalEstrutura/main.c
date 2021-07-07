@@ -11,14 +11,9 @@
 /*
 * Disciplina: Estrutura de Dados
 * Professora: Marta Adriana Machado da Silva
-* Grupo: Artur Dias, Bruno Simon, David Leonardeli, Jannaina e Luiz Gustavo
+* Grupo: Artur Dias, Alysson, Bruno Simon, David Leonardeli, Jannaina e Luiz Gustavo
 */
-
-// AutoLibrarian
-// "Automatize suas funções na biblioteca com esse programa!"
-
-// Feito com amor e carinho na base do Go Horse!
-
+// Biblioteca do Macaco
 /*
 1.O sistema deve possibilitar o cadastro das entidades (por exemplo: livro, exemplar, associado, empréstimo, reserva, etc.) identificadas
 a partir do problema. X
@@ -31,7 +26,7 @@ Isso vale para todasas entidades do sistema. Desse modo, cada   instância   da  
 a identifica unicamente. X
 
 4.Deve ainda permitir a exclusão de determinado registro somente se o mesmo não estiver sendo relacionado por outra entidade a qual dependa
-dessa informação.
+dessa informação. X
 
 5.Todas  as  informações  podem  ser  alteradas,  com  exceção  do  campo  que  identifica unicamente determinada entidade (chave). X
 
@@ -42,7 +37,7 @@ lista principal permitindo o acesso à informação completa. O algoritmo de ordena
 7.O  sistema  deve  ainda  permitir,  para  uma  entidade  específica,  a  localização  de determinado registro pelo campo utilizado no item 6.
 O algoritmo de busca binária deve ser utilizado.
 
-8.Ao ser executado posteriormente, o sistema, deve recompor em memória todas as informações previamente armazenadas em disco. !Acho que consegui
+8.Ao ser executado posteriormente, o sistema, deve recompor em memória todas as informações previamente armazenadas em disco. !Acho que consegui!
 
 9.Considerando o objetivo principal do sistema (controle de empréstimos de livros) o mesmo deve realizar todas as consistências ou operações
 que se caracterizem como uma  regra  de  negócio  (por  exemplo,  verificação  do  limite  de  empréstimo  por usuário, cobrança de multa,

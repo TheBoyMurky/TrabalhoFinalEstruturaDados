@@ -36,13 +36,17 @@ typedef struct LivrosEncontrados {
 } LivroEncontrado;
 
 //Ponteiro que ajudarão em algoritmos de organização
+//Ponteiros da lista principal
 NoLivro* primeiroLivro = NULL;
 NoLivro* atualLivro = NULL;
 NoLivro* anteriorLivro = NULL;
 NoLivro* proximoLivro = NULL;
-NoLivro* temporarioLivro = NULL;
+NoLivro* temporarioLivro1 = NULL;
+NoLivro* temporarioLivro2 = NULL;
+//Ponteiros da lista organizada
 LivroEncontrado* primeiroLivroE = NULL;
 LivroEncontrado* atualLivroE = NULL;
+LivroEncontrado* proximoLivroE = NULL;
 
 //Artur
 //Colocar um novo livro no início
@@ -99,6 +103,7 @@ void cadastrar(void) {
     primeiroLivroE = cadastroE;
 
     printf("\nLivro cadastrado com sucesso!\n\n");
+
     return;
 }
 
@@ -138,6 +143,7 @@ void retirar(void) {
         }
         printf("Livro retirado com sucesso:\n");
         imprimirInfo(atualLivro);
+
     } else
         puts("Não foi encontrado um livro com esse ISBN, tente novamente");
 
@@ -162,13 +168,13 @@ void modificarLivro(void) {
                 printf("Insira um novo título: ");
                 fflush(stdin);
                 fgets(temp, 50, stdin);
-                strcpy(atualLivro->livro.titulo, temp);
+                strcpy(atualLivro->livro.titulo, strlwr(temp));
                 break;
             case 2:
                 printf("Insira um novo título: ");
                 fflush(stdin);
                 fgets(temp, 50, stdin);
-                strcpy(atualLivro->livro.autor, temp);
+                strcpy(atualLivro->livro.autor, strlwr(temp));
                 break;
 
             case 3:
@@ -282,15 +288,15 @@ int retirarExemplar(NoLivro* l) {
 }
 
 void listarLivros(void) {
-    atualLivro = primeiroLivro;
-    if(atualLivro == NULL) {
+    if(primeiroLivroE == NULL) {
         printf("A lista está vazia\n");
         return;
     }
-    //organizarTitulo(); // Ver erro em organizarTítulo
-    while(atualLivro != NULL) {
-        imprimirInfo(atualLivro);
-        atualLivro = atualLivro->prox;
+    organizarTitulo();
+    atualLivroE = primeiroLivroE;
+    while(atualLivroE != NULL) {
+        imprimirInfo(atualLivroE->livroE);
+        atualLivroE = atualLivroE->prox;
     }
     return;
 }
@@ -356,6 +362,7 @@ void recuperarInfo(void) {
         puts("\nNão há arquivo de registros anteriores\n");
 }
 
+/*
 // Redefinir o primeiroLivro no final pois está excluindo na hora de listar
 void organizarTitulo(void) {
     if(primeiroLivro == NULL)
@@ -384,3 +391,42 @@ void organizarTitulo(void) {
         }
     }
 }
+*/
+//Organizar corrigido
+void organizarTitulo(void) {
+    if(primeiroLivroE == NULL)
+        return;
+
+    int tamanhoLista = 0;
+    int i, j, k, x;
+
+    for(atualLivroE = primeiroLivroE; atualLivroE != NULL; atualLivroE = atualLivroE->prox) {
+        tamanhoLista++;
+    }
+
+    k = tamanhoLista;
+
+    for ( i = 0 ; i < tamanhoLista - 1 ; i++, k-- ) {
+        atualLivroE = primeiroLivroE;
+        proximoLivroE = atualLivroE->prox;
+
+        for ( j = 1 ; j < k ; j++ ) {
+            //Para que podemos referenciar o Livro na lista de livros organizados "LivrosE", temos que jogar eles
+            //para uma variável temporário, nesse caso usaremos o temporarioLivro1 e temporarioLivro2
+            temporarioLivro1 = atualLivroE->livroE;
+            temporarioLivro2 = proximoLivroE->livroE;
+            //Quando compara com strncmp se o primeiro string for igual ao segundo o valor retornado será 0
+            //Quando o primeiro string for maior que o segundo o valor retornado será 1 ( > 0)
+            //Quando o primeiro string for menor que o segundo o valor retornado será -1 ( < 0)
+            int valorComparacao = strncmp(temporarioLivro1->livro.titulo, temporarioLivro2->livro.titulo, 50);
+            if ( valorComparacao > 0 ) {
+                atualLivroE->livroE = temporarioLivro2;
+                proximoLivroE->livroE = temporarioLivro1;
+            }
+
+            atualLivroE = atualLivroE->prox;
+            proximoLivroE = proximoLivroE->prox;
+         }
+    }
+}
+
