@@ -49,8 +49,9 @@ LivroEncontrado* ultimoLivroE = NULL;
 LivroEncontrado* atualLivroE = NULL;
 LivroEncontrado* proximoLivroE = NULL;
 
-//Artur
-//Colocar um novo livro no início
+/*
+ * --FUNÇÕES QUE ALTEREM O ESTOQUE--
+*/
 void cadastrar(void) {
     char ISBN[18];
     char temp[50];
@@ -135,7 +136,6 @@ void retirar(void) {
         for(int i = 0; i < 5; i++) {
             if(atualLivro->livro.exemplares[i] == 0)
                 printf("Esse livro não pode ser retirado de estoque pois um exemplar foi emprestado\n");
-                //Insirir depois com quem está o livro
                 return;
         }
         if(atualLivro == primeiroLivro) {
@@ -236,6 +236,99 @@ void modificarLivro(void) {
     return;
 }
 
+void organizar(void) {
+    if(primeiroLivroE == NULL)
+        return;
+
+    int tamanhoLista = 0;
+    int i, j, k, x, op;
+
+    for(atualLivroE = primeiroLivroE; atualLivroE != NULL; atualLivroE = atualLivroE->prox) {
+        tamanhoLista++;
+    }
+
+    k = tamanhoLista;
+
+    printf("Deseja organizar por qual modo?\n1 - Título\n2 - Autor\n3 - Sair\n");
+    printf("> ");
+    scanf("%d", &op);
+    if(op == 3) {
+        return;
+    } else if(op == 1 || op == 2) {
+        for (i = 0 ; i < tamanhoLista - 1 ; i++, k-- ) {
+            atualLivroE = primeiroLivroE;
+            proximoLivroE = atualLivroE->prox;
+            if(op == 1) {
+                for ( j = 1 ; j < k ; j++ ) {
+                    //Para que podemos referenciar o Livro na lista de livros organizados "LivrosE", temos que jogar eles
+                    //para uma variável temporário, nesse caso usaremos o temporarioLivro1 e temporarioLivro2
+                    temporarioLivro1 = atualLivroE->livroE;
+                    temporarioLivro2 = proximoLivroE->livroE;
+                    //Quando compara com strncmp se o primeiro string for igual ao segundo o valor retornado será 0
+                    //Quando o primeiro string for maior que o segundo o valor retornado será 1 ( > 0)
+                    //Quando o primeiro string for menor que o segundo o valor retornado será -1 ( < 0)
+                    //São comparados os valors na tabela ASCII
+                    //https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/ASCII-Table-wide.svg/1280px-ASCII-Table-wide.svg.png
+                    int valorComparacao = strncmp(temporarioLivro1->livro.titulo, temporarioLivro2->livro.titulo, 50);
+                    if ( valorComparacao > 0 ) {
+                        atualLivroE->livroE = temporarioLivro2;
+                        proximoLivroE->livroE = temporarioLivro1;
+                    }
+
+                    atualLivroE = atualLivroE->prox;
+                    proximoLivroE = proximoLivroE->prox;
+                }
+            }
+            if(op == 2) {
+                for ( j = 1 ; j < k ; j++ ) {
+                    temporarioLivro1 = atualLivroE->livroE;
+                    temporarioLivro2 = proximoLivroE->livroE;
+                    int valorComparacao = strncmp(temporarioLivro1->livro.autor, temporarioLivro2->livro.autor, 50);
+                    if ( valorComparacao > 0 ) {
+                        atualLivroE->livroE = temporarioLivro2;
+                        proximoLivroE->livroE = temporarioLivro1;
+                    }
+
+                    atualLivroE = atualLivroE->prox;
+                    proximoLivroE = proximoLivroE->prox;
+                }
+            }
+        }
+    } else {
+        puts("Código inválido, tente novamente");
+    }
+    return;
+}
+
+int retirarExemplar(NoLivro* l) {
+    for(int i = 0; i < 5; i++) {
+        if(l->livro.exemplares[i] == 2) {
+            puts("Não tem mais exemplares desse livro em estoque\n");
+            return 0;
+        }
+
+        if(l->livro.exemplares[i] == 1) {
+            l->livro.exemplares[i] = 0;
+            return 1;
+        }
+    }
+}
+
+int devolverExemplar(NoLivro* l) {
+    for(int i = 0; i < 5; i++) {
+        if(l->livro.exemplares[i] == 0) {
+            l->livro.exemplares[i] = 1;
+            return 1;
+        }
+    }
+    //Se retornar 0 significa que algo ruim aconteceu
+    return 0;
+}
+
+/*
+ * --FUNÇÕES INFORMATIVOS-- Artur
+*/
+
 //Não consegui fazer retornar um NoLivro, irei então utilizar para resolver condição
 //retornando 0 para falso e 1 para verdadeiro
 //Caso retorne 1 significa que o atualLivro é o Livro encontrado
@@ -312,13 +405,11 @@ int pesquisarISBN(char ISBNPesquisado[18]) {
 }
 */
 
-//Ajeitar para que retorne a string para outras funções
 void imprimirInfo(NoLivro* l) {
     if(l == NULL) {
         puts("Livro Inválido!");
         return;
     }
-    //Ajeitar para que consegue imprimir a quantidade em estoque
     int quantEstoque = 0;
     for(int i = 0; i < 5; i++) {
         if(l->livro.exemplares[i] == 2)
@@ -328,21 +419,6 @@ void imprimirInfo(NoLivro* l) {
     }
     printf("\n===Informações Livro===\nTitulo: %sAutor: %sISBN: %s\nQuantidade em estoque: %d\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn, quantEstoque);
     return;
-}
-
-//Bruno
-int retirarExemplar(NoLivro* l) {
-    for(int i = 0; i < 5; i++) {
-        if(l->livro.exemplares[i] == 2) {
-            puts("Não tem mais exemplares desse livro em estoque\n");
-            return 0;
-        }
-
-        if(l->livro.exemplares[i] == 1) {
-            l->livro.exemplares[i] = 0;
-            return 1;
-        }
-    }
 }
 
 void listarLivros(void) {
@@ -359,6 +435,9 @@ void listarLivros(void) {
     return;
 }
 
+/*
+ * --FUNÇÕES DE PERMANÊNCIA DE DISCO-- Bruno
+*/
 // https://pt.stackoverflow.com/questions/45642/como-guardar-ler-lista-encadeada-em-arquivo
 void salvarInfo(void) {
     if(primeiroLivro == NULL) {
@@ -420,67 +499,5 @@ void recuperarInfo(void) {
         puts("\nNão há arquivo de registros anteriores\n");
 }
 
-void organizar(void) {
-    if(primeiroLivroE == NULL)
-        return;
 
-    int tamanhoLista = 0;
-    int i, j, k, x, op;
-
-    for(atualLivroE = primeiroLivroE; atualLivroE != NULL; atualLivroE = atualLivroE->prox) {
-        tamanhoLista++;
-    }
-
-    k = tamanhoLista;
-
-    printf("Deseja organizar por qual modo?\n1 - Título\n2 - Autor\n3 - Sair\n");
-    printf("> ");
-    scanf("%d", &op);
-    if(op == 3) {
-        return;
-    } else if(op == 1 || op == 2) {
-        for (i = 0 ; i < tamanhoLista - 1 ; i++, k-- ) {
-            atualLivroE = primeiroLivroE;
-            proximoLivroE = atualLivroE->prox;
-            if(op == 1) {
-                for ( j = 1 ; j < k ; j++ ) {
-                    //Para que podemos referenciar o Livro na lista de livros organizados "LivrosE", temos que jogar eles
-                    //para uma variável temporário, nesse caso usaremos o temporarioLivro1 e temporarioLivro2
-                    temporarioLivro1 = atualLivroE->livroE;
-                    temporarioLivro2 = proximoLivroE->livroE;
-                    //Quando compara com strncmp se o primeiro string for igual ao segundo o valor retornado será 0
-                    //Quando o primeiro string for maior que o segundo o valor retornado será 1 ( > 0)
-                    //Quando o primeiro string for menor que o segundo o valor retornado será -1 ( < 0)
-                    //São comparados os valors na tabela ASCII
-                    //https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/ASCII-Table-wide.svg/1280px-ASCII-Table-wide.svg.png
-                    int valorComparacao = strncmp(temporarioLivro1->livro.titulo, temporarioLivro2->livro.titulo, 50);
-                    if ( valorComparacao > 0 ) {
-                        atualLivroE->livroE = temporarioLivro2;
-                        proximoLivroE->livroE = temporarioLivro1;
-                    }
-
-                    atualLivroE = atualLivroE->prox;
-                    proximoLivroE = proximoLivroE->prox;
-                }
-            }
-            if(op == 2) {
-                for ( j = 1 ; j < k ; j++ ) {
-                    temporarioLivro1 = atualLivroE->livroE;
-                    temporarioLivro2 = proximoLivroE->livroE;
-                    int valorComparacao = strncmp(temporarioLivro1->livro.autor, temporarioLivro2->livro.autor, 50);
-                    if ( valorComparacao > 0 ) {
-                        atualLivroE->livroE = temporarioLivro2;
-                        proximoLivroE->livroE = temporarioLivro1;
-                    }
-
-                    atualLivroE = atualLivroE->prox;
-                    proximoLivroE = proximoLivroE->prox;
-                }
-            }
-        }
-    } else {
-        puts("Código inválido, tente novamente");
-    }
-    return;
-}
 

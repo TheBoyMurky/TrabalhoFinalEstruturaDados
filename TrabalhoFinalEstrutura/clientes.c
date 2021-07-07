@@ -90,23 +90,61 @@ void emprestarLivro(void) {
     printf("Insira o ISBN do livro que será emprestado: ");
     fflush(stdin);
     fgets(ISBN, 18, stdin);
-    pesquisarISBN(ISBN);
-    if(!pesquisarID(ID)) {
-        for(i; i <= 3; i++) {
-            if(i == 3) {
-                printf("Cliente ja tem 3 livros que foram emprestados, faça uma devolução para que possa levara outro livro");
-                return;
-            }
-            if(atualLeitor->leitor.livrosEmprestados[i] == NULL) {
-                if(retirarExemplar(atualLivro) == 1) {
-                    atualLeitor->leitor.livrosEmprestados[i] = &atualLivro;
-                    printf("Livro emprestado com sucesso\n");
+    if(!pesquisarISBN(ISBN)) {
+        if(!pesquisarID(ID)) {
+            for(i; i <= 3; i++) {
+                if(i == 3) {
+                    printf("Cliente ja tem 3 livros que foram emprestados, faça uma devolução para que possa levara outro livro");
                     return;
                 }
+                if(atualLeitor->leitor.livrosEmprestados[i] == NULL) {
+                    if(retirarExemplar(atualLivro) == 1) {
+                        atualLeitor->leitor.livrosEmprestados[i] = &atualLivro;
+                        printf("Livro emprestado com sucesso\n");
+                        return;
+                    }
+                }
             }
+        } else {
+            printf("Não existe um cliente com esse ID, tente novamente\n");
         }
     } else {
-        printf("Não existe um cliente com esse ID, tente novamente\n");
+        printf("Não foi encontrado um livro com esse ISBN, tente novamente mais tarde\n");
     }
+    return;
+}
+
+void devolverLivro(void) {
+    char ISBN[18], ID[9];
+    int i = 0;
+
+    printf("Insira o ID do cliente que será emprestado o livro: ");
+    fflush(stdin);
+    fgets(ID, 18, stdin);
+    printf("Insira o ISBN do livro que será emprestado: ");
+    fflush(stdin);
+    fgets(ISBN, 18, stdin);
+    if(!pesquisarISBN(ISBN)) {
+        if(!pesquisarID(ID)) {
+            for(i; i <= 3; i++) {
+                if(i == 3) {
+                    printf("Não foi emprestado para o cliente um livro com esse ISBN, tente novamente");
+                    return;
+                }
+                if(atualLeitor->leitor.livrosEmprestados[i] == atualLivro) {
+                    if(devolverExemplar(atualLivro) == 1) {
+                        atualLeitor->leitor.livrosEmprestados[i] = NULL;
+                        printf("Livro devolvido com sucesso\n");
+                        return;
+                    }
+                }
+            }
+        } else {
+            printf("Não existe um cliente com esse ID, tente novamente\n");
+        }
+    } else {
+        printf("Não foi encontrado um livro com esse ISBN, tente novamente mais tarde\n");
+    }
+
     return;
 }
