@@ -16,4 +16,11 @@ void listarLivros(void);
 void salvarInfo(void);
 void recuperarInfo(void);
 
+//Emprestimo
+int retirarExemplar(struct NoLivro* l);
+
+//Como não consegui retornar o nó em pesquisarISBN, vou utilizar o ponteiro para facilitar a vida
+//https://stackoverflow.com/questions/1045501/how-do-i-share-variables-between-different-c-files
+extern struct NoLivro* atualLivro;
+
 #endif // LIVROS_H_INCLUDED

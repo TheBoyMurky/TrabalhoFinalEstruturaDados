@@ -6,11 +6,12 @@
 #include <ctype.h>
 #include "livros.h"
 
+//Alyssonn
 //Struct Leitor
 struct Leitor {
     char nome[80];
     //Valor Chave
-    //Ex.: AAAA-1234
+    //Ex.: AAAA-1111
     char id[9];
     struct NoLivro* livrosEmprestados[3];
 };
@@ -30,18 +31,19 @@ struct NoLeitor* anteriorLeitor = NULL;
 struct NoLeitor* proximoLeitor = NULL;
 struct NoLeitor* temporarioLeitor = NULL;
 
+
 // Funções
 void cadastrarCliente(void) {
-    char ID[9];
+    char ID[10];
     struct NoLeitor* cadastro = malloc(sizeof(struct NoLeitor));
     printf("Insira o nome completo do cliente: ");
     fflush(stdin);
     fgets(cadastro->leitor.nome, 80, stdin);
     printf("Insira o id do cliente [Exemplo ABCD-1234]: ");
     fflush(stdin);
-    fgets(ID, 9, stdin);
+    fgets(ID, 10, stdin);
     if(strlen(ID) == 9) {
-        if(pesquisarID(ID)) {
+        if(!pesquisarID(ID)) {
             strcpy(cadastro->leitor.id, ID);
         } else {
             puts("Já existe um cadastro com esse identificador:");
@@ -51,11 +53,14 @@ void cadastrarCliente(void) {
         puts("ID incorreto, tente novamente");
         return;
     }
+    cadastro->prox = primeiroLeitor;
+    primeiroLeitor = cadastro;
+    printf("\nCliente cadastrado com sucesso!\n\n");
+    return;
 }
 
-
+// Luiz
 //Função Booleana, retorna 1 caso encontre ou 0 caso não encontre
-//Implementar que retorne o No encontrado, caso não encontre retorne NULL
 int pesquisarID(char IDPesquisado[18]) {
 
     atualLeitor = primeiroLeitor;
@@ -77,11 +82,31 @@ int pesquisarID(char IDPesquisado[18]) {
 //Terminar de linkar o livro com o cliente
 void emprestarLivro(void) {
     char ISBN[18], ID[9];
-    printf("Insira o ISBN do livro que será emprestado: ");
-    fflush(stdin);
-    fgets(ISBN, 18, stdin);
+    int i = 0;
+
     printf("Insira o ID do cliente que será emprestado o livro: ");
     fflush(stdin);
     fgets(ID, 18, stdin);
+    printf("Insira o ISBN do livro que será emprestado: ");
+    fflush(stdin);
+    fgets(ISBN, 18, stdin);
+    pesquisarISBN(ISBN);
+    if(!pesquisarID(ID)) {
+        for(i; i <= 3; i++) {
+            if(i == 3) {
+                printf("Cliente ja tem 3 livros que foram emprestados, faça uma devolução para que possa levara outro livro");
+                return;
+            }
+            if(atualLeitor->leitor.livrosEmprestados[i] == NULL) {
+                if(retirarExemplar(atualLivro) == 1) {
+                    atualLeitor->leitor.livrosEmprestados[i] = &atualLivro;
+                    printf("Livro emprestado com sucesso\n");
+                    return;
+                }
+            }
+        }
+    } else {
+        printf("Não existe um cliente com esse ID, tente novamente\n");
+    }
     return;
 }

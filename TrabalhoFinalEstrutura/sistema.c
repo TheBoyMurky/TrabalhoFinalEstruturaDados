@@ -5,7 +5,9 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "livros.h"
+#include "clientes.h"
 
+//Janna
 void sistema(void) {
 
     int op = 1;
@@ -14,7 +16,7 @@ void sistema(void) {
     while(op != 0) {
         printf("\n ===Sistema Biblioteca===\n");
         printf("1 - Estoque Livro\n");
-        printf("2 - Cadastro Cliente\n");
+        printf("2 - Setor Cliente\n");
         printf("0 - Sair\n");
         printf("> ");
         scanf("%d", &op);
@@ -26,6 +28,7 @@ void sistema(void) {
                     recuperadoInfo++;
                 }
                 while(op != 5) {
+                    // Artur, Bruno, David
                     printf("===Estoque===\n1 - Cadastrar novo livro\n2 - Retirar Livro\n3 - Alterar Cadastro Livro\n4 - Listar Livros\n5 - Voltar\n> "); scanf("%d", &op);
                     switch(op) {
                         case 1:
@@ -49,14 +52,15 @@ void sistema(void) {
                 }
                 break;
             case 2:
+                // Alyssonn, Luiz
                 while(op != 3) {
                     printf("1 - Cadastrar novo cliente\n2 - Emprestimo Livro\n3 - Voltar\n> "); scanf("%d", &op);
                     switch(op) {
                         case 1:
-                            printf("A ser implementado!");
+                            cadastrarCliente();
                             break;
                         case 2:
-                            printf("A ser implementado!");
+                            emprestarLivro();
                             break;
                         case 3:
                             break;

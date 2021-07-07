@@ -6,15 +6,16 @@
 #include <ctype.h>
 #include "clientes.h"
 
+//David
 //Estrutura do Livro
 struct Livro {
     char titulo[50];
     char autor[50];
     //Criar um array para que possa representar cada exemplar
     //em seu próprio array, Ex.:
-    //3 exemplares = exemplar = { 0, 1, 1 }
-    //1 para quando está em estoque e 0 quando foi emprestado
-    int  exemplares[10];
+    //3 exemplares = exemplar = { 0, 1, 1, 2 }
+    //1 para quando está em estoque, 0 quando foi emprestado e 2 para quebrar  leitura
+    int  exemplares[5];
     //Valor Chave para identificação
     char isbn[18];
 };
@@ -22,11 +23,13 @@ struct Livro {
 //Limite de títulos que pode utilizar para a biblioteca, para essa demonstração iremos mostrar com até 10 títulos
 #define LIMITEBIBLIOTECA 10
 
-//Listas Linkadas
+//--Listas Linkadas--
+// Nó principal
 typedef struct NoLivros { //typedef é usado para que sempre que declaramos uma variavel do tipo NoLivros, não precise ser sempre "struct NoLivros variavel"
     struct Livro livro;
     struct NoLivro* prox;
 } NoLivro;
+// Nó secundário que utilizaremos para funções de organização
 typedef struct LivrosEncontrados {
     struct NoLivro* livroE;
     struct LivrosEncontrados* prox;
@@ -38,12 +41,15 @@ NoLivro* atualLivro = NULL;
 NoLivro* anteriorLivro = NULL;
 NoLivro* proximoLivro = NULL;
 NoLivro* temporarioLivro = NULL;
+LivroEncontrado* primeiroLivroE = NULL;
+LivroEncontrado* atualLivroE = NULL;
 
+//Artur
 //Colocar um novo livro no início
 void cadastrar(void) {
     char ISBN[18];
     char temp[50];
-    int quant;
+    int quant, i;
     //Iniciamos um ponteiro do tipo No para receber o endereço que será alocado por malloc de tamanho que cabe a nossa struct No
     NoLivro* cadastro = malloc(sizeof(NoLivro)); //malloc é apenas uma função para reservar um espaço em memória de tamanho x e vai retornar o endereço onde reservou
     printf("Insira o título do livro: ");
@@ -73,18 +79,24 @@ void cadastrar(void) {
     printf("Insira quantidade de exemplares tem em estoque desse livro: ");
     fflush(stdin);
     scanf("%d", &quant);
-    if((quant > 0) && (quant < 10)) {
-        for(int i = 0; i < quant; i++)
+    if((quant > 0) && (quant < 5)) {
+        for(i = 0; i < quant; i++)
             cadastro->livro.exemplares[i] = 1;
+        if(i != 4)
+            cadastro->livro.exemplares[i] = 2;
     } else {
-        puts("Quantidade inválido, números abaixo de 0, 0 e números acima de 10 não são permitidos");
+        puts("Quantidade inválido, números abaixo de 0, 0 e números acima de 5 não são permitidos");
         return;
     }
-
+    //Iremos Começar a criar uma lista que podemos utilizar para organizar
+    LivroEncontrado* cadastroE = malloc(sizeof(LivroEncontrado));
+    cadastroE->livroE = cadastro;
     //Colocar esse livro como o primeiro da lista colocando o prox apontando para o primeiro de antes
     cadastro->prox = primeiroLivro;
+    cadastroE->prox = primeiroLivroE;
     //Depois coloca no variável global qual é o novo primeiro da lista
     primeiroLivro = cadastro;
+    primeiroLivroE = cadastroE;
 
     printf("\nLivro cadastrado com sucesso!\n\n");
     return;
@@ -111,7 +123,12 @@ void retirar(void) {
                 atualLivro = atualLivro->prox;
             }
         }
-
+        for(int i = 0; i < 5; i++) {
+            if(atualLivro->livro.exemplares[i] == 0)
+                printf("Esse livro não pode ser retirado de estoque pois um exemplar foi emprestado\n");
+                //Insirir depois com quem está o livro
+                return;
+        }
         if(atualLivro == primeiroLivro) {
             //só esquece o primeiro de antes em memória
             primeiroLivro = primeiroLivro->prox;
@@ -129,7 +146,7 @@ void retirar(void) {
 void modificarLivro(void) {
     char ISBN[18];
     char temp[50];
-    int quant, op;
+    int quant, op, emprestado, estoque, quantEstoque, i;
     printf("Insira o ISBN a ser alterado: ");
     fflush(stdin);
     fgets(ISBN, 18, stdin);
@@ -137,7 +154,8 @@ void modificarLivro(void) {
         printf("\nLivro encontrado:");
         imprimirInfo(atualLivro);
 
-        printf("Deseja modificar algum elemento?\n1 - Título\n2 - Autor\n3 - Sair\n");
+        printf("Deseja modificar algum elemento?\n1 - Título\n2 - Autor\n3 - Exemplares (Alterar quantos tem em estoque)\n4 - Sair\n");
+        printf("> ");
         scanf("%d", &op);
         switch(op) {
             case 1:
@@ -152,8 +170,50 @@ void modificarLivro(void) {
                 fgets(temp, 50, stdin);
                 strcpy(atualLivro->livro.autor, temp);
                 break;
+
             case 3:
+                emprestado = 0;
+                quantEstoque = 0;
+                for(i = 0; i < 5; i++) {
+                    if(atualLivro->livro.exemplares[i] == 2)
+                        break;
+                    if(atualLivro->livro.exemplares[i] == 1)
+                        quantEstoque++;
+                    if(atualLivro->livro.exemplares[i] == 0) {
+                        emprestado++;
+                        quantEstoque++;
+                    }
+                }
+                estoque = 0;
+
+                if(emprestado == 0) {
+                    printf("Quantos estão em estoque (Máximo 5): ");
+                    scanf("%d", &estoque);
+                    if(estoque > 5) {
+                        puts("Valor inválido, tente novamente");
+                        break;
+                    }
+                    for(i = 0; i < estoque; i++)
+                        atualLivro->livro.exemplares[i] = 1;
+                    if(estoque != 5)
+                        atualLivro->livro.exemplares[i] = 2;
+                } else {
+                    printf("Alguns livros estão emprestados no momentos, pode apenas adicionar novos exemplares no estoque, ");
+                    printf("quantos você vai adicionar ao estoque? No momento tem %d exemplares e o máximo é 5: ", quantEstoque-1);
+                    scanf("%d", &estoque);
+                    if(estoque + quantEstoque > 5) {
+                        puts("Valor inválido, tente novamente");
+                        break;
+                    } else {
+                        for(i = quantEstoque-1; i < quantEstoque + estoque; i++)
+                            atualLivro->livro.exemplares[i] = 1;
+                        if(estoque != 5)
+                            atualLivro->livro.exemplares[i+1] = 2;
+                    }
+                }
                 break;
+            case 4:
+                return;
             default:
                 puts("Valor inserido inválido, tente novamente");
         }
@@ -195,8 +255,30 @@ void imprimirInfo(NoLivro* l) {
         return;
     }
     //Ajeitar para que consegue imprimir a quantidade em estoque
-    printf("\n===Informações Livro===\nTitulo: %sAutor: %sISBN: %s\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn);
+    int quantEstoque = 0;
+    for(int i = 0; i < 5; i++) {
+        if(l->livro.exemplares[i] == 2)
+            break;
+        if(l->livro.exemplares[i] == 1)
+            quantEstoque++;
+    }
+    printf("\n===Informações Livro===\nTitulo: %sAutor: %sISBN: %s\nQuantidade em estoque: %d\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn, quantEstoque);
     return;
+}
+
+//Bruno
+int retirarExemplar(NoLivro* l) {
+    for(int i = 0; i < 5; i++) {
+        if(l->livro.exemplares[i] == 2) {
+            puts("Não tem mais exemplares desse livro em estoque\n");
+            return 0;
+        }
+
+        if(l->livro.exemplares[i] == 1) {
+            l->livro.exemplares[i] = 0;
+            return 1;
+        }
+    }
 }
 
 void listarLivros(void) {
