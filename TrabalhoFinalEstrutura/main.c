@@ -32,7 +32,7 @@ dessa informação. X
 
 6.O sistema deve possibilitar a listagem por algum tipo de ordem das informações de cada entidade. Para tal, cada entidade terá a sua lista
 principal e uma lista secundária ordenada por determinado campo que contenha, além do campo que possibilita a ordem, o endereço do nó na
-lista principal permitindo o acesso à informação completa. O algoritmo de ordenação Quicksort deve ser utilizado.
+lista principal permitindo o acesso à informação completa. O algoritmo de ordenação Quicksort deve ser utilizado. X
 
 7.O  sistema  deve  ainda  permitir,  para  uma  entidade  específica,  a  localização  de determinado registro pelo campo utilizado no item 6.
 O algoritmo de busca binária deve ser utilizado.
@@ -41,7 +41,7 @@ O algoritmo de busca binária deve ser utilizado.
 
 9.Considerando o objetivo principal do sistema (controle de empréstimos de livros) o mesmo deve realizar todas as consistências ou operações
 que se caracterizem como uma  regra  de  negócio  (por  exemplo,  verificação  do  limite  de  empréstimo  por usuário, cobrança de multa,
-travamento de empréstimo, etc). As regras são descritas na seção II. Universidade do Extremo Sul Catarinense
+travamento de empréstimo, etc). As regras são descritas na seção II. Universidade do Extremo Sul Catarinense !Realizado ja uma verificação de limite!
 Unidade Acadêmica de Ciências, Engenharias e Tecnologias Curso de Ciência da Computação
 
 10.O sistema deve permitir a geração de pelo menos dois relatórios gerenciais em que as  informações  estejam  agrupadas  e  sumarizadas.

@@ -5,7 +5,7 @@
 void cadastrar(void);
 void retirar(void);
 void modificarLivro(void);
-void organizarTitulo(void);
+void organizar(void);
 
 //Informativo
 int pesquisarISBN(char ISBNPesquisado[18]);
