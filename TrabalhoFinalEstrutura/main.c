@@ -37,7 +37,7 @@ lista principal permitindo o acesso à informação completa. O algoritmo de ordena
 7.O  sistema  deve  ainda  permitir,  para  uma  entidade  específica,  a  localização  de determinado registro pelo campo utilizado no item 6.
 O algoritmo de busca binária deve ser utilizado.
 
-8.Ao ser executado posteriormente, o sistema, deve recompor em memória todas as informações previamente armazenadas em disco.
+8.Ao ser executado posteriormente, o sistema, deve recompor em memória todas as informações previamente armazenadas em disco. X
 
 9.Considerando o objetivo principal do sistema (controle de empréstimos de livros) o mesmo deve realizar todas as consistências ou operações
 que se caracterizem como uma  regra  de  negócio  (por  exemplo,  verificação  do  limite  de  empréstimo  por usuário, cobrança de multa,

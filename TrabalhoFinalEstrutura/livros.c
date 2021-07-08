@@ -384,13 +384,13 @@ void imprimirInfo(NoLivro* l) {
         if(l->livro.exemplares[i] == 1)
             quantEstoque++;
     }
-    printf("\n===Informações Livro===\nTitulo: %sAutor: %sISBN: %s\nQuantidade em estoque: %d\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn, quantEstoque);
+    printf("\n===Informações Livro===\nTitulo: %sAutor:  %sISBN:   %s\nEm estoque: %d\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn, quantEstoque);
     return;
 }
 
 void listarLivros(void) {
     if(primeiroLivroE == NULL || primeiroLivro == NULL) {
-        printf("A lista está vazia\n");
+        printf("\nA lista está vazia\n\n");
         return;
     }
     organizar();
@@ -413,47 +413,60 @@ void salvarInfo(void) {
     }
     FILE *fp; // File pointer
     fp = fopen("registro.dat", "wb"); // arquivo tem que ter permissão w para escrita e b para abrir como binario
-    struct Livro LivrosE[LIMITEBIBLIOTECA]; // Livros encontrados
+    struct Livro LivrosArray[LIMITEBIBLIOTECA];
     int contador = 0, esc;
+
     if (fp != NULL) {
-        while(atualLivro->prox != NULL) {
-            LivrosE[contador] = atualLivro->livro;
+        // Cria um array com as struct Livro
+        atualLivro = primeiroLivro;
+        while(atualLivro != NULL) {
+            strcpy(LivrosArray[contador].titulo, atualLivro->livro.titulo);
+            strcpy(LivrosArray[contador].autor, atualLivro->livro.autor);
+            for(int i = 0; i < 5; i++)
+                LivrosArray[contador].exemplares[i] = atualLivro->livro.exemplares[i];
+            strcpy(LivrosArray[contador].isbn, atualLivro->livro.isbn);
             atualLivro = atualLivro->prox;
             contador++;
         }
-        esc = fwrite(LivrosE, sizeof(LivrosE), LIMITEBIBLIOTECA, fp); // Função retorna quantidade de elementos escritos
+
+        esc = fwrite(LivrosArray, sizeof(struct Livro), contador, fp); // Função retorna quantidade de elementos escritos
         if (esc == contador)
-            printf("Gravacao de registros com sucesso!\n");
+            printf("\nGravacao de registros com sucesso\n\n");
         else
-            printf("Erro na gravação de registro!\n");
+            printf("\nErro na gravação de registro\n\n");
         fclose(fp);
     } else
-        puts("Erro na criação do arquivo");
+        puts("\nErro na criação do arquivo\n");
 
     return;
 }
 void recuperarInfo(void) {
     FILE *fp;
     fp = fopen("registro.dat", "rb");
-    struct Livro LivrosE[LIMITEBIBLIOTECA];
+    struct Livro LivrosArray[LIMITEBIBLIOTECA];
     int esc;
 
     if (fp != NULL) {
-        esc = fread(LivrosE, sizeof(LivrosE), LIMITEBIBLIOTECA, fp);
+        esc = fread(LivrosArray, sizeof(struct Livro), LIMITEBIBLIOTECA, fp);
         if (esc > 0) {
             for (int i = 0; i < esc; i++) {
                 NoLivro* reCadastro = malloc(sizeof(NoLivro));
-                strcpy(reCadastro->livro.titulo, LivrosE[i].titulo);
-                strcpy(reCadastro->livro.autor, LivrosE[i].autor);
-                if(primeiroLivro == NULL)
-                    primeiroLivro = reCadastro;
-                if(anteriorLivro == NULL) {
-                    anteriorLivro = reCadastro;
-                    continue;
-                } else {
-                    anteriorLivro->prox = reCadastro;
-                    anteriorLivro = reCadastro;
-                }
+                strcpy(reCadastro->livro.titulo, LivrosArray[i].titulo);
+                strcpy(reCadastro->livro.autor, LivrosArray[i].autor);
+                for(int i = 0; i < 5; i++)
+                    reCadastro->livro.exemplares[i] = LivrosArray[i].exemplares[i];
+                strcpy(reCadastro->livro.isbn, LivrosArray[i].isbn);
+
+                LivroEncontrado* reCadastroE = malloc(sizeof(LivroEncontrado));
+                reCadastroE->livroE = reCadastro;
+                //Colocar esse livro como o primeiro da lista colocando o prox apontando para o primeiro de antes
+                reCadastro->prox = primeiroLivro;
+                reCadastroE->prox = primeiroLivroE;
+                //Depois coloca no variável global qual é o novo primeiro da lista
+                primeiroLivro = reCadastro;
+                if(primeiroLivroE == NULL)
+                    ultimoLivroE = reCadastroE;
+                primeiroLivroE = reCadastroE;
             }
             printf("Leitura do registro realizado com sucesso\n");
         }
