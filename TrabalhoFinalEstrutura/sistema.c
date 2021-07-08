@@ -49,8 +49,8 @@ void sistema(void) {
                 }
                 break;
             case 2:
-                while(op != 3) {
-                    printf("1 - Cadastrar novo cliente\n2 - Emprestimo Livro\n3 - Voltar\n> "); scanf("%d", &op);
+                while(op != 4) {
+                    printf("\n===Clientes===\n1 - Cadastrar novo cliente\n2 - Emprestimo Livro\n3 - Devolver Livro\n4 - Voltar\n> "); scanf("%d", &op);
                     switch(op) {
                         case 1:
                             cadastrarCliente();
@@ -59,6 +59,9 @@ void sistema(void) {
                             emprestarLivro();
                             break;
                         case 3:
+                            devolverLivro();
+                            break;
+                        case 4:
                             break;
                         default:
                             puts("Código inválido");

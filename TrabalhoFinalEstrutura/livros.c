@@ -178,7 +178,7 @@ void modificarLivro(void) {
         printf("\nLivro encontrado:");
         imprimirInfo(atualLivro);
 
-        printf("Deseja modificar algum elemento?\n1 - Título\n2 - Autor\n3 - Exemplares (Alterar quantos tem em estoque)\n4 - Sair\n");
+        printf("\nDeseja modificar algum elemento?\n1 - Título\n2 - Autor\n3 - Exemplares (Alterar quantos tem em estoque)\n4 - Sair\n");
         printf("> ");
         scanf("%d", &op);
         switch(op) {
@@ -410,8 +410,8 @@ void imprimirInfo(NoLivro* l) {
     printf("\n==Informações Livro==\n");
     printf("Titulo:     %s", l->livro.titulo);
     printf("Autor:      %s", l->livro.autor);
-    printf("ISBN:       %s", l->livro.isbn);
-    printf("Em estoque: %d\n\n", quantEstoque)
+    printf("ISBN:       %s\n", l->livro.isbn);
+    printf("Em estoque: %d\n\n", quantEstoque);
 
     return;
 }
@@ -463,7 +463,7 @@ void salvarInfo(void) {
 
         esc = fwrite(LivrosArray, sizeof(struct Livro), contador, fp); // Função retorna quantidade de elementos escritos
         if (esc == contador) //Verifica se todos os elementos do array foram registrados
-            printf("\nGravacao de registros com sucesso\n");
+            printf("\nGravação de registros com sucesso\n");
         else
             printf("\nErro na gravação de registro\n"); //Caso não, será representado por esse erro
         fclose(fp);

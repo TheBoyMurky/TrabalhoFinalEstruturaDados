@@ -71,9 +71,9 @@ void cadastrarCliente(void) {
 int pesquisarID(char IDPesquisado[18]) {
 
     //Verifica se a lista de clientes não está vazio
-    atualLeitor = primeiroLeitor;
-    if(atualLeitor == NULL)
+    if(primeiroLeitor == NULL)
         return 0;
+     atualLeitor = primeiroLeitor;
 
     //Quick Search
     while(strcmp(atualLeitor->leitor.id, IDPesquisado) != 0) {
@@ -101,7 +101,7 @@ void emprestarLivro(void) {
     fflush(stdin);
     fgets(ISBN, 18, stdin);
     //Verifica se existe o ISBN para os livros e o ID para os clientes
-    if(!pesquisarISBN(ISBN)) {
+    if(pesquisarISBN(ISBN)) {
         if(!pesquisarID(ID)) {
             for(i; i <= 3; i++) {
                 if(i == 3) {
@@ -113,8 +113,8 @@ void emprestarLivro(void) {
                 //Encontra o primeiro do array de livros emprestado que está em nulo e coloca o endereço no lugar
                 if(atualLeitor->leitor.livrosEmprestados[i] == NULL) {
                     if(retirarExemplar(atualLivro)) {
-                        atualLeitor->leitor.livrosEmprestados[i] = &atualLivro;
-                        printf("Livro emprestado com sucesso\n");
+                        atualLeitor->leitor.livrosEmprestados[i] = atualLivro;
+                        printf("Livro emprestado com sucesso\n\n");
                         return;
                     }
                 }
@@ -134,26 +134,26 @@ void devolverLivro(void) {
     int i = 0;
 
     //Pede os valores chaves (ID para o cliente e ISBN para o livro)
-    printf("Insira o ID do cliente que será emprestado o livro: ");
+    printf("Insira o ID do cliente que devolverá o livro: ");
     fflush(stdin);
     fgets(ID, 18, stdin);
-    printf("Insira o ISBN do livro que será emprestado: ");
+    printf("Insira o ISBN do livro que será devolvido: ");
     fflush(stdin);
     fgets(ISBN, 18, stdin);
     //Verifica se existe o ISBN para os livros e o ID para os clientes
-    if(!pesquisarISBN(ISBN)) {
+    if(pesquisarISBN(ISBN)) {
         if(!pesquisarID(ID)) {
             for(i; i <= 3; i++) {
                 if(i == 3) {
                     //Caso o for loop chegue em 3 significa que não foi emprestado um livro para esse cliente com essa ISBN
-                    printf("Não foi emprestado para o cliente um livro com esse ISBN, tente novamente");
+                    printf("Não foi emprestado para o cliente um livro com esse ISBN, tente novamente\n");
                     return;
                 }
                 //Utiliza a função devolverExemplar para ajustar os exemplares do array
                 if(atualLeitor->leitor.livrosEmprestados[i] == atualLivro) {
                     if(devolverExemplar(atualLivro)) {
                         atualLeitor->leitor.livrosEmprestados[i] = NULL;
-                        printf("Livro devolvido com sucesso\n");
+                        printf("Livro devolvido com sucesso\n\n");
                         return;
                     }
                 }
