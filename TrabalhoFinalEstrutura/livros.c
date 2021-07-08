@@ -12,30 +12,30 @@ struct Livro {
     char titulo[50];
     char autor[50];
     //Criar um array para que possa representar cada exemplar
-    //em seu pr√≥prio array, Ex.:
+    //em seu prÛprio array, Ex.:
     //3 exemplares = exemplar = { 0, 1, 1, 2 }
-    //1 para quando est√° em estoque, 0 quando foi emprestado e 2 para quebrar  leitura
+    //1 para quando est· em estoque, 0 quando foi emprestado e 2 para quebrar  leitura
     int  exemplares[5];
-    //Valor Chave para identifica√ß√£o
+    //Valor Chave para identificaÁ„o
     char isbn[18];
 };
 
-//Limite de t√≠tulos que pode utilizar para a biblioteca, para essa demonstra√ß√£o iremos mostrar com at√© 10 t√≠tulos
+//Limite de tÌtulos que pode utilizar para a biblioteca, para essa demonstraÁ„o iremos mostrar com atÈ 10 tÌtulos
 #define LIMITEBIBLIOTECA 10
 
 //--Listas Linkadas--
-// N√≥ principal
-typedef struct NoLivros { //typedef √© usado para que sempre que declaramos uma variavel do tipo NoLivros, n√£o precise ser sempre "struct NoLivros variavel"
+// NÛ principal
+typedef struct NoLivros { //typedef È usado para que sempre que declaramos uma variavel do tipo NoLivros, n„o precise ser sempre "struct NoLivros variavel"
     struct Livro livro;
     struct NoLivro* prox;
 } NoLivro;
-// N√≥ secund√°rio que utilizaremos para fun√ß√µes de organiza√ß√£o
+// NÛ secund·rio que utilizaremos para funÁıes de organizaÁ„o
 typedef struct LivrosEncontrados {
     struct NoLivro* livroE;
     struct LivrosEncontrados* prox;
 } LivroEncontrado;
 
-//Ponteiro que ajudar√£o em algoritmos de organiza√ß√£o
+//Ponteiro que ajudar„o em algoritmos de organizaÁ„o
 //Ponteiros da lista principal
 NoLivro* primeiroLivro = NULL;
 NoLivro* atualLivro = NULL;
@@ -48,17 +48,18 @@ LivroEncontrado* primeiroLivroE = NULL;
 LivroEncontrado* ultimoLivroE = NULL;
 LivroEncontrado* atualLivroE = NULL;
 LivroEncontrado* proximoLivroE = NULL;
+LivroEncontrado* anteriorLivroE = NULL;
 
 /*
- * --FUN√á√ïES QUE ALTEREM O ESTOQUE--
+ * --FUN«’ES QUE ALTEREM O ESTOQUE--
 */
 void cadastrar(void) {
     char ISBN[18];
     char temp[50];
     int quant, i;
-    //Iniciamos um ponteiro do tipo No para receber o endere√ßo que ser√° alocado por malloc de tamanho que cabe a nossa struct No
-    NoLivro* cadastro = malloc(sizeof(NoLivro)); //malloc √© apenas uma fun√ß√£o para reservar um espa√ßo em mem√≥ria de tamanho x e vai retornar o endere√ßo onde reservou
-    printf("Insira o t√≠tulo do livro: ");
+    //Iniciamos um ponteiro do tipo No para receber o endereÁo que ser· alocado por malloc de tamanho que cabe a nossa struct No
+    NoLivro* cadastro = malloc(sizeof(NoLivro)); //malloc È apenas uma funÁ„o para reservar um espaÁo em memÛria de tamanho x e vai retornar o endereÁo onde reservou
+    printf("Insira o tÌtulo do livro: ");
     fflush(stdin);
     fgets(temp, 50, stdin);
     strcpy(cadastro->livro.titulo, strlwr(temp));
@@ -73,7 +74,7 @@ void cadastrar(void) {
         if(!pesquisarISBN(ISBN)) {
             strcpy(cadastro->livro.isbn, ISBN);
         } else {
-            puts("J√° existe um livro com esse identificador:");
+            puts("J· existe um livro com esse identificador:");
             imprimirInfo(atualLivro);
             puts("Verifique o estoque e tente novamente");
             return;
@@ -91,16 +92,16 @@ void cadastrar(void) {
         if(i != 4)
             cadastro->livro.exemplares[i] = 2;
     } else {
-        puts("Quantidade inv√°lido, n√∫meros abaixo de 0, 0 e n√∫meros acima de 5 n√£o s√£o permitidos");
+        puts("Quantidade inv·lido, n˙meros abaixo de 0, 0 e n˙meros acima de 5 n„o s„o permitidos");
         return;
     }
-    //Iremos Come√ßar a criar uma lista que podemos utilizar para organizar
+    //Iremos ComeÁar a criar uma lista que podemos utilizar para organizar
     LivroEncontrado* cadastroE = malloc(sizeof(LivroEncontrado));
     cadastroE->livroE = cadastro;
     //Colocar esse livro como o primeiro da lista colocando o prox apontando para o primeiro de antes
     cadastro->prox = primeiroLivro;
     cadastroE->prox = primeiroLivroE;
-    //Depois coloca no vari√°vel global qual √© o novo primeiro da lista
+    //Depois coloca no vari·vel global qual È o novo primeiro da lista
     primeiroLivro = cadastro;
     if(primeiroLivroE == NULL)
         ultimoLivroE = cadastroE;
@@ -111,7 +112,7 @@ void cadastrar(void) {
     return;
 }
 
-//Ajeitar para que altere a lista secund√°ria
+//Ajeitar para que altere a lista secund·ria
 void retirar(void) {
     if(primeiroLivro == NULL) {
         return;
@@ -121,38 +122,38 @@ void retirar(void) {
     printf("Insira o ISBN a ser retirado: ");
     fflush(stdin);
     fgets(ISBN, 18, stdin);
-    if(pesquisarISBN(ISBN)) {
-        while(strcmp(atualLivro->livro.isbn, ISBN) != 0) {
-            //Caso o atual for o ultimo, encerra o programa e retorna falso
-            if(atualLivro->prox == NULL) {
-                return;
-            } else {
-                //Guarde o ponteiro atual em anterior
-                anteriorLivro = atualLivro;
-                //Caso o atual n√£o for o ultimo, continue a procurar
-                atualLivro = atualLivro->prox;
-            }
-        }
-        for(int i = 0; i < 5; i++) {
-            if(atualLivro->livro.exemplares[i] == 0)
-                printf("Esse livro n√£o pode ser retirado de estoque pois um exemplar foi emprestado\n");
-                return;
-        }
-        if(atualLivro == primeiroLivro) {
-            //s√≥ esquece o primeiro de antes em mem√≥ria
-            primeiroLivro = primeiroLivro->prox;
+    while(strcmp(atualLivro->livro.isbn, ISBN) != 0) {
+        //Caso o atual for o ultimo, encerra o programa
+        if(atualLivro->prox == NULL) {
+            printf("N„o foi encontrado um livro com esse ISBN, tente novamente mais tarde");
+            return;
         } else {
-            //Nesse passo ser√° colocado o pr√≥ximo do atual, para o pr√≥ximo do anterior, assim, o anterior vai passar em frente ignorando o atual
-            anteriorLivro->prox = atualLivro->prox;
+            //Guarde o ponteiro atual em anterior
+            anteriorLivro = atualLivro;
+            //Caso o atual n„o for o ultimo, continue a procurar
+            atualLivro = atualLivro->prox;
         }
-        printf("Livro retirado com sucesso:\n");
-        imprimirInfo(atualLivro);
-
-    } else
-        puts("N√£o foi encontrado um livro com esse ISBN, tente novamente");
+    }
+    /* Essa parte ta bugando a funÁ„o retirar
+    for(int i = 0; i < 5; i++) {
+        if(atualLivro->livro.exemplares[i] == 0)
+            printf("Esse livro n„o pode ser retirado de estoque pois um exemplar foi emprestado\n");
+            return;
+    }
+    */
+    if(atualLivro == primeiroLivro) {
+        //sÛ esquece o primeiro de antes em memÛria
+        primeiroLivro = primeiroLivro->prox;
+    } else {
+        //Nesse passo ser· colocado o prÛximo do atual, para o prÛximo do anterior, assim, o anterior vai passar em frente ignorando o atual
+        anteriorLivro->prox = atualLivro->prox;
+    }
+    printf("Livro retirado com sucesso:\n");
+    imprimirInfo(atualLivro);
 
     return;
 }
+
 void modificarLivro(void) {
     char ISBN[18];
     char temp[50];
@@ -164,12 +165,12 @@ void modificarLivro(void) {
         printf("\nLivro encontrado:");
         imprimirInfo(atualLivro);
 
-        printf("Deseja modificar algum elemento?\n1 - T√≠tulo\n2 - Autor\n3 - Exemplares (Alterar quantos tem em estoque)\n4 - Sair\n");
+        printf("Deseja modificar algum elemento?\n1 - TÌtulo\n2 - Autor\n3 - Exemplares (Alterar quantos tem em estoque)\n4 - Sair\n");
         printf("> ");
         scanf("%d", &op);
         switch(op) {
             case 1:
-                printf("Insira um novo t√≠tulo: ");
+                printf("Insira um novo tÌtulo: ");
                 fflush(stdin);
                 fgets(temp, 50, stdin);
                 strcpy(atualLivro->livro.titulo, strlwr(temp));
@@ -197,10 +198,10 @@ void modificarLivro(void) {
                 estoque = 0;
 
                 if(emprestado == 0) {
-                    printf("Quantos est√£o em estoque (M√°ximo 5): ");
+                    printf("Quantos est„o em estoque (M·ximo 5): ");
                     scanf("%d", &estoque);
                     if(estoque > 5) {
-                        puts("Valor inv√°lido, tente novamente");
+                        puts("Valor inv·lido, tente novamente");
                         break;
                     }
                     for(i = 0; i < estoque; i++)
@@ -208,11 +209,11 @@ void modificarLivro(void) {
                     if(estoque != 5)
                         atualLivro->livro.exemplares[i] = 2;
                 } else {
-                    printf("Alguns livros est√£o emprestados no momentos, pode apenas adicionar novos exemplares no estoque, ");
-                    printf("quantos voc√™ vai adicionar ao estoque? No momento tem %d exemplares e o m√°ximo √© 5: ", quantEstoque-1);
+                    printf("Alguns livros est„o emprestados no momentos, pode apenas adicionar novos exemplares no estoque, ");
+                    printf("quantos vocÍ vai adicionar ao estoque? No momento tem %d exemplares e o m·ximo È 5: ", quantEstoque-1);
                     scanf("%d", &estoque);
                     if(estoque + quantEstoque > 5) {
-                        puts("Valor inv√°lido, tente novamente");
+                        puts("Valor inv·lido, tente novamente");
                         break;
                     } else {
                         for(i = quantEstoque-1; i < quantEstoque + estoque; i++)
@@ -225,12 +226,12 @@ void modificarLivro(void) {
             case 4:
                 return;
             default:
-                puts("Valor inserido inv√°lido, tente novamente");
+                puts("Valor inserido inv·lido, tente novamente");
         }
         printf("Resultado: ");
         imprimirInfo(atualLivro);
     } else {
-        puts("\nLivro n√£o encontrado\n");
+        puts("\nLivro n„o encontrado\n");
     }
 
     return;
@@ -243,13 +244,33 @@ void organizar(void) {
     int tamanhoLista = 0;
     int i, j, k, x, op;
 
+    //Retirar qualquer elemento na lista que n„o est· apontando para um livro
+    while(atualLivroE != NULL) {
+        //Caso o atual for o ultimo, encerra o programa e retorna falso
+        if(atualLivroE->livroE == NULL) {
+            if(atualLivroE == primeiroLivroE) {
+                primeiroLivroE = primeiroLivroE->prox;
+            } else {
+                anteriorLivroE->prox = atualLivroE->prox;
+            }
+        }
+        if(atualLivro->prox == NULL) {
+            break;
+        } else {
+            //Guarde o ponteiro atual em anterior
+            anteriorLivroE = atualLivroE;
+            //Caso o atual n„o for o ultimo, continue a procurar
+            atualLivroE = atualLivroE->prox;
+        }
+    }
+
     for(atualLivroE = primeiroLivroE; atualLivroE != NULL; atualLivroE = atualLivroE->prox) {
         tamanhoLista++;
     }
 
     k = tamanhoLista;
 
-    printf("Deseja organizar por qual modo?\n1 - T√≠tulo\n2 - Autor\n3 - Sair\n");
+    printf("Deseja organizar por qual modo?\n1 - TÌtulo\n2 - Autor\n3 - Sair\n");
     printf("> ");
     scanf("%d", &op);
     if(op == 3) {
@@ -261,13 +282,13 @@ void organizar(void) {
             if(op == 1) {
                 for ( j = 1 ; j < k ; j++ ) {
                     //Para que podemos referenciar o Livro na lista de livros organizados "LivrosE", temos que jogar eles
-                    //para uma vari√°vel tempor√°rio, nesse caso usaremos o temporarioLivro1 e temporarioLivro2
+                    //para uma vari·vel tempor·rio, nesse caso usaremos o temporarioLivro1 e temporarioLivro2
                     temporarioLivro1 = atualLivroE->livroE;
                     temporarioLivro2 = proximoLivroE->livroE;
-                    //Quando compara com strncmp se o primeiro string for igual ao segundo o valor retornado ser√° 0
-                    //Quando o primeiro string for maior que o segundo o valor retornado ser√° 1 ( > 0)
-                    //Quando o primeiro string for menor que o segundo o valor retornado ser√° -1 ( < 0)
-                    //S√£o comparados os valors na tabela ASCII
+                    //Quando compara com strncmp se o primeiro string for igual ao segundo o valor retornado ser· 0
+                    //Quando o primeiro string for maior que o segundo o valor retornado ser· 1 ( > 0)
+                    //Quando o primeiro string for menor que o segundo o valor retornado ser· -1 ( < 0)
+                    //S„o comparados os valors na tabela ASCII
                     //https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/ASCII-Table-wide.svg/1280px-ASCII-Table-wide.svg.png
                     int valorComparacao = strncmp(temporarioLivro1->livro.titulo, temporarioLivro2->livro.titulo, 50);
                     if ( valorComparacao > 0 ) {
@@ -295,7 +316,7 @@ void organizar(void) {
             }
         }
     } else {
-        puts("C√≥digo inv√°lido, tente novamente");
+        puts("CÛdigo inv·lido, tente novamente");
     }
     return;
 }
@@ -303,7 +324,7 @@ void organizar(void) {
 int retirarExemplar(NoLivro* l) {
     for(int i = 0; i < 5; i++) {
         if(l->livro.exemplares[i] == 2) {
-            puts("N√£o tem mais exemplares desse livro em estoque\n");
+            puts("N„o tem mais exemplares desse livro em estoque\n");
             return 0;
         }
 
@@ -326,13 +347,13 @@ int devolverExemplar(NoLivro* l) {
 }
 
 /*
- * --FUN√á√ïES INFORMATIVOS-- Artur
+ * --FUN«’ES INFORMATIVOS-- Artur
 */
 
-//N√£o consegui fazer retornar um NoLivro, irei ent√£o utilizar para resolver condi√ß√£o
+//N„o consegui fazer retornar um NoLivro, irei ent„o utilizar para resolver condiÁ„o
 //retornando 0 para falso e 1 para verdadeiro
-//Caso retorne 1 significa que o atualLivro √© o Livro encontrado
-//A fun√ß√£o via utilizar o atualLivro como ponteiro para resolver passar o valor encontrado
+//Caso retorne 1 significa que o atualLivro È o Livro encontrado
+//A funÁ„o via utilizar o atualLivro como ponteiro para resolver passar o valor encontrado
 int pesquisarISBN(char ISBNPesquisado[18]) {
 
     atualLivro = primeiroLivro;
@@ -345,69 +366,15 @@ int pesquisarISBN(char ISBNPesquisado[18]) {
         if(atualLivro->prox == NULL)
             return 0;
         else
-            atualLivro = atualLivro->prox; //Caso o atual n√£o for o ultimo, continue a procurar
+            atualLivro = atualLivro->prox; //Caso o atual n„o for o ultimo, continue a procurar
     }
     //Caso saia do while loop significa que o ISBN foi encontrado
     return 1;
 }
-/* Implementa√ß√£o Com Bubble Sort
-int pesquisarISBN(char ISBNPesquisado[18]) {
-
-    if(primeiroLivroE == NULL)
-        return 0;
-
-    int tamanhoLista = 0;
-    int i, j, k, x, op;
-
-    for(atualLivroE = primeiroLivroE; atualLivroE != NULL; atualLivroE = atualLivroE->prox) {
-        tamanhoLista++;
-    }
-
-    k = tamanhoLista;
-
-    atualLivroE = primeiroLivroE;
-
-    //Organizar os ISBN
-    for (i = 0 ; i < tamanhoLista - 1 ; i++, k-- ) {
-        atualLivroE = primeiroLivroE;
-        proximoLivroE = atualLivroE->prox;
-        for ( j = 1 ; j < k ; j++ ) {
-            temporarioLivro1 = atualLivroE->livroE;
-            temporarioLivro2 = proximoLivroE->livroE;
-            int valorComparacao = strncmp(temporarioLivro1->livro.titulo, temporarioLivro2->livro.titulo, 50);
-            if ( valorComparacao > 0 ) {
-                atualLivroE->livroE = temporarioLivro2;
-                proximoLivroE->livroE = temporarioLivro1;
-            }
-            atualLivroE = atualLivroE->prox;
-            proximoLivroE = proximoLivroE->prox;
-        }
-    }
-
-    //Bubble Sort
-    middle = (first+last)/2;
-    while (first <= last) {
-        if (array[middle] < search) {
-            first = middle + 1;
-        } else if (array[middle] == search) {
-            printf("%d is present at index %d.\n", search, middle+1);
-            break;
-        } else {
-            last = middle - 1;
-        }
-        middle = (first + last)/2;
-    }
-    if (first > last)
-        printf("Not found! %d is not present in the list.\n", search);
-
-    //Caso saia do while loop significa que o ISBN foi encontrado
-    return 1;
-}
-*/
 
 void imprimirInfo(NoLivro* l) {
     if(l == NULL) {
-        puts("Livro Inv√°lido!");
+        puts("Livro Inv·lido!");
         return;
     }
     int quantEstoque = 0;
@@ -417,13 +384,13 @@ void imprimirInfo(NoLivro* l) {
         if(l->livro.exemplares[i] == 1)
             quantEstoque++;
     }
-    printf("\n===Informa√ß√µes Livro===\nTitulo: %sAutor: %sISBN: %s\nQuantidade em estoque: %d\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn, quantEstoque);
+    printf("\n===InformaÁıes Livro===\nTitulo: %sAutor: %sISBN: %s\nQuantidade em estoque: %d\n\n", l->livro.titulo, l->livro.autor, l->livro.isbn, quantEstoque);
     return;
 }
 
 void listarLivros(void) {
-    if(primeiroLivroE == NULL) {
-        printf("A lista est√° vazia\n");
+    if(primeiroLivroE == NULL || primeiroLivro == NULL) {
+        printf("A lista est· vazia\n");
         return;
     }
     organizar();
@@ -436,16 +403,16 @@ void listarLivros(void) {
 }
 
 /*
- * --FUN√á√ïES DE PERMAN√äNCIA DE DISCO-- Bruno
+ * --FUN«’ES DE PERMAN NCIA DE DISCO-- Bruno
 */
 // https://pt.stackoverflow.com/questions/45642/como-guardar-ler-lista-encadeada-em-arquivo
 void salvarInfo(void) {
     if(primeiroLivro == NULL) {
-        printf("A lista est√° vazia, nada ser√° salvo.\n");
+        printf("A lista est· vazia, nada ser· salvo.\n");
         return;
     }
     FILE *fp; // File pointer
-    fp = fopen("registro.dat", "wb"); // arquivo tem que ter permiss√£o w para escrita e b para abrir como binario
+    fp = fopen("registro.dat", "wb"); // arquivo tem que ter permiss„o w para escrita e b para abrir como binario
     struct Livro LivrosE[LIMITEBIBLIOTECA]; // Livros encontrados
     int contador = 0, esc;
     if (fp != NULL) {
@@ -454,14 +421,14 @@ void salvarInfo(void) {
             atualLivro = atualLivro->prox;
             contador++;
         }
-        esc = fwrite(LivrosE, sizeof(LivrosE), LIMITEBIBLIOTECA, fp); // Fun√ß√£o retorna quantidade de elementos escritos
+        esc = fwrite(LivrosE, sizeof(LivrosE), LIMITEBIBLIOTECA, fp); // FunÁ„o retorna quantidade de elementos escritos
         if (esc == contador)
             printf("Gravacao de registros com sucesso!\n");
         else
-            printf("Erro na grava√ß√£o de registro!\n");
+            printf("Erro na gravaÁ„o de registro!\n");
         fclose(fp);
     } else
-        puts("Erro na cria√ß√£o do arquivo");
+        puts("Erro na criaÁ„o do arquivo");
 
     return;
 }
@@ -491,12 +458,12 @@ void recuperarInfo(void) {
             printf("Leitura do registro realizado com sucesso\n");
         }
         else
-            printf("N√£o h√° registros anteriores para recuperar\n");
+            printf("N„o h· registros anteriores para recuperar\n");
 
         fclose(fp);
     }
     else
-        puts("\nN√£o h√° arquivo de registros anteriores\n");
+        puts("\nN„o h· arquivo de registros anteriores\n");
 }
 
 
