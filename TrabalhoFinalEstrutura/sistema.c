@@ -9,7 +9,6 @@
 
 //Jannaina
 void sistema(void) {
-
     int op = 1;
     int recuperadoInfo = 0; //Quando for igual a 1 foi tentado recuperar os registros de registro.dat
     char ISBN[18];

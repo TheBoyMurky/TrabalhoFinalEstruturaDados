@@ -18,10 +18,7 @@ void listarLivros(void);
 void salvarInfo(void);
 void recuperarInfo(void);
 
-
-
-
-//Como não consegui retornar o nó em pesquisarISBN, vou utilizar o ponteiro para facilitar a vida
+//Como não consegui retornar o nó em pesquisarISBN, vou utilizar o ponteiro para funções em clientes.c
 //https://stackoverflow.com/questions/1045501/how-do-i-share-variables-between-different-c-files
 extern struct NoLivro* atualLivro;
 

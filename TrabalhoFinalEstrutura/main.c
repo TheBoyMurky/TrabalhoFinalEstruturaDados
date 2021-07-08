@@ -13,7 +13,7 @@
 * Professora: Marta Adriana Machado da Silva
 * Grupo: Artur Dias, Alysson, Bruno Simon, David Leonardeli, Jannaina e Luiz Gustavo
 */
-// Biblioteca do Macaco
+// AutoTeca
 /*
 1.O sistema deve possibilitar o cadastro das entidades (por exemplo: livro, exemplar, associado, empréstimo, reserva, etc.) identificadas
 a partir do problema. X

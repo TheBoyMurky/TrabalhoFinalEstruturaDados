@@ -34,16 +34,21 @@ struct NoLeitor* temporarioLeitor = NULL;
 
 // Funções
 void cadastrarCliente(void) {
+    //Inicializa as variáveis iniciais
     char ID[10];
+    //Iniciamos um ponteiro do tipo NoLeitor chamado cadastro para receber o endereço que será alocado por malloc
+    //de tamanho que cabe a nossa struct NoLeitor
     struct NoLeitor* cadastro = malloc(sizeof(struct NoLeitor));
+    //Requisito de informações básicas
     printf("Insira o nome completo do cliente: ");
     fflush(stdin);
     fgets(cadastro->leitor.nome, 80, stdin);
     printf("Insira o id do cliente [Exemplo ABCD-1234]: ");
     fflush(stdin);
     fgets(ID, 10, stdin);
+    //Verificação de formatação
     if(strlen(ID) == 9) {
-        if(!pesquisarID(ID)) {
+        if(!pesquisarID(ID)) { //Verificação de que se ja existe um cliente com esse ID
             strcpy(cadastro->leitor.id, ID);
         } else {
             puts("Já existe um cadastro com esse identificador:");
@@ -53,7 +58,9 @@ void cadastrarCliente(void) {
         puts("ID incorreto, tente novamente");
         return;
     }
+    //Colocar esse cliente como o primeiro da lista colocando o "prox" para o primeiro de antes
     cadastro->prox = primeiroLeitor;
+    //E troca o ponteiro do primeiro da lista para o novo cadastro
     primeiroLeitor = cadastro;
     printf("\nCliente cadastrado com sucesso!\n\n");
     return;
@@ -63,6 +70,7 @@ void cadastrarCliente(void) {
 //Função Booleana, retorna 1 caso encontre ou 0 caso não encontre
 int pesquisarID(char IDPesquisado[18]) {
 
+    //Verifica se a lista de clientes não está vazio
     atualLeitor = primeiroLeitor;
     if(atualLeitor == NULL)
         return 0;
@@ -79,26 +87,32 @@ int pesquisarID(char IDPesquisado[18]) {
     return 1;
 }
 
-//Terminar de linkar o livro com o cliente
 void emprestarLivro(void) {
+
+    //Inicializa as variáveis iniciais
     char ISBN[18], ID[9];
     int i = 0;
 
+    //Pede os valores chaves (ID para o cliente e ISBN para o livro)
     printf("Insira o ID do cliente que será emprestado o livro: ");
     fflush(stdin);
     fgets(ID, 18, stdin);
     printf("Insira o ISBN do livro que será emprestado: ");
     fflush(stdin);
     fgets(ISBN, 18, stdin);
+    //Verifica se existe o ISBN para os livros e o ID para os clientes
     if(!pesquisarISBN(ISBN)) {
         if(!pesquisarID(ID)) {
             for(i; i <= 3; i++) {
                 if(i == 3) {
+                    //Caso o for loop chegue em 3 significa que está com o array de livros emprestados cheios,
+                    //avisa o cliente e finaliza a função
                     printf("Cliente ja tem 3 livros que foram emprestados, faça uma devolução para que possa levara outro livro");
                     return;
                 }
+                //Encontra o primeiro do array de livros emprestado que está em nulo e coloca o endereço no lugar
                 if(atualLeitor->leitor.livrosEmprestados[i] == NULL) {
-                    if(retirarExemplar(atualLivro) == 1) {
+                    if(retirarExemplar(atualLivro)) {
                         atualLeitor->leitor.livrosEmprestados[i] = &atualLivro;
                         printf("Livro emprestado com sucesso\n");
                         return;
@@ -115,24 +129,29 @@ void emprestarLivro(void) {
 }
 
 void devolverLivro(void) {
+    //Inicializa as variáveis iniciais
     char ISBN[18], ID[9];
     int i = 0;
 
+    //Pede os valores chaves (ID para o cliente e ISBN para o livro)
     printf("Insira o ID do cliente que será emprestado o livro: ");
     fflush(stdin);
     fgets(ID, 18, stdin);
     printf("Insira o ISBN do livro que será emprestado: ");
     fflush(stdin);
     fgets(ISBN, 18, stdin);
+    //Verifica se existe o ISBN para os livros e o ID para os clientes
     if(!pesquisarISBN(ISBN)) {
         if(!pesquisarID(ID)) {
             for(i; i <= 3; i++) {
                 if(i == 3) {
+                    //Caso o for loop chegue em 3 significa que não foi emprestado um livro para esse cliente com essa ISBN
                     printf("Não foi emprestado para o cliente um livro com esse ISBN, tente novamente");
                     return;
                 }
+                //Utiliza a função devolverExemplar para ajustar os exemplares do array
                 if(atualLeitor->leitor.livrosEmprestados[i] == atualLivro) {
-                    if(devolverExemplar(atualLivro) == 1) {
+                    if(devolverExemplar(atualLivro)) {
                         atualLeitor->leitor.livrosEmprestados[i] = NULL;
                         printf("Livro devolvido com sucesso\n");
                         return;
